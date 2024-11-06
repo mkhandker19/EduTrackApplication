@@ -28,8 +28,10 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class DB_GUI_Controller implements Initializable {
-
     @FXML
+    private Button deleteBtn;
+    @FXML
+    private Button editBtn;    
     TextField first_name, last_name, department, major, email, imageURL;
     @FXML
     ImageView img_view;
@@ -57,6 +59,8 @@ public class DB_GUI_Controller implements Initializable {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        deleteBtn.setDisable(true);
+        editBtn.setDisable(true);
     }
 
     @FXML
@@ -228,5 +232,4 @@ public class DB_GUI_Controller implements Initializable {
             this.major = venue;
         }
     }
-
 }
