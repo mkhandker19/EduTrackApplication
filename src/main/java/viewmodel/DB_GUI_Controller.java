@@ -31,7 +31,11 @@ public class DB_GUI_Controller implements Initializable {
     @FXML
     private Button deleteBtn;
     @FXML
-    private Button editBtn;    
+    private Button editBtn;
+    @FXML
+    private Button  addBtn;
+    @FXML
+    private Button clearBtn;
     TextField first_name, last_name, department, major, email, imageURL;
     @FXML
     ImageView img_view;
@@ -61,6 +65,8 @@ public class DB_GUI_Controller implements Initializable {
         }
         deleteBtn.setDisable(true);
         editBtn.setDisable(true);
+
+
     }
 
     @FXML
