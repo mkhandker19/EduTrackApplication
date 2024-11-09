@@ -29,6 +29,20 @@ import java.util.ResourceBundle;
 
 public class DB_GUI_Controller implements Initializable {
     @FXML
+    private TableView<Person> tv;
+    @FXML
+    private TableColumn<Person, Integer> tv_id;
+    @FXML
+    private TableColumn<Person, String> tv_fn;
+    @FXML
+    private TableColumn<Person, String> tv_ln;
+    @FXML
+    private TableColumn<Person, String> tv_department;
+    @FXML
+    private TableColumn<Person, String> tv_major;
+    @FXML
+    private TableColumn<Person, String> tv_email;
+    @FXML
     private Button deleteBtn;
     @FXML
     private Button editBtn;
@@ -41,12 +55,6 @@ public class DB_GUI_Controller implements Initializable {
     ImageView img_view;
     @FXML
     MenuBar menuBar;
-    @FXML
-    private TableView<Person> tv;
-    @FXML
-    private TableColumn<Person, Integer> tv_id;
-    @FXML
-    private TableColumn<Person, String> tv_fn, tv_ln, tv_department, tv_major, tv_email;
     private final DbConnectivityClass cnUtil = new DbConnectivityClass();
     private final ObservableList<Person> data = cnUtil.getData();
 
@@ -66,6 +74,11 @@ public class DB_GUI_Controller implements Initializable {
         deleteBtn.setDisable(true);
         editBtn.setDisable(true);
 
+        tv.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            boolean isSelected = newValue != null;
+            editBtn.setDisable(!isSelected);
+            deleteBtn.setDisable(!isSelected);
+        });
 
     }
 
