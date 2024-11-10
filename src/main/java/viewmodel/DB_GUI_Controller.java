@@ -55,6 +55,12 @@ public class DB_GUI_Controller implements Initializable {
     ImageView img_view;
     @FXML
     MenuBar menuBar;
+    private static final String firstNameReg = "(\\w){2,25}";
+    private static final String lastNameReg = "(\\w){2,25}";
+    private static final String departmentReg = "(\\w){2,25}";
+    private static final String majorReg = "(\\w){2,25}";
+    private static final String emailReg = "((\\w)(\\w+)(\\w))@(\\w+).(\\w+)";
+    private static final String imageRex = "(?i)^.+\\.(jpg|jpeg|png|gif|bmp)$";
     private final DbConnectivityClass cnUtil = new DbConnectivityClass();
     private final ObservableList<Person> data = cnUtil.getData();
 
