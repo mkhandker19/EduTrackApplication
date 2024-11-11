@@ -60,7 +60,7 @@ public class DB_GUI_Controller implements Initializable {
     private static final String departmentReg = "(\\w){2,25}";
     private static final String majorReg = "(\\w){2,25}";
     private static final String emailReg = "((\\w)(\\w+)(\\w))@(\\w+).(\\w+)";
-    private static final String imageRex = "(?i)^.+\\.(jpg|jpeg|png|gif|bmp)$";
+    private static final String imageReg = "(?i)^.+\\.(jpg|jpeg|png|gif|bmp)$";
     private final DbConnectivityClass cnUtil = new DbConnectivityClass();
     private final ObservableList<Person> data = cnUtil.getData();
 
@@ -256,5 +256,24 @@ public class DB_GUI_Controller implements Initializable {
             this.lname = date;
             this.major = venue;
         }
+
+    }
+    private boolean firstNameValid(String firstName) {
+        return firstName.matches(firstNameReg);
+    }
+    private boolean lastNameValid(String lastName) {
+        return lastName.matches(lastNameReg);
+    }
+    private boolean departmentValid(String department) {
+        return department.matches(departmentReg);
+    }
+    private boolean majorValid(String major) {
+        return major.matches(majorReg);
+    }
+    private boolean emailValid(String email) {
+        return email.matches(emailReg);
+    }
+    private boolean imageValid(String file) {
+        return file.matches(imageReg);
     }
 }
