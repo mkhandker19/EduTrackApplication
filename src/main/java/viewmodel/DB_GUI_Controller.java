@@ -134,6 +134,7 @@ public class DB_GUI_Controller implements Initializable {
         major.setText("");
         email.setText("");
         imageURL.setText("");
+        validateForm();
     }
 
     @FXML
@@ -283,11 +284,11 @@ public class DB_GUI_Controller implements Initializable {
         }
 
     }
-    private boolean firstNameValid(String firstName) {
-        return firstName.matches(firstNameReg);
+    private boolean firstNameValid(String first_name) {
+        return first_name.matches(firstNameReg);
     }
-    private boolean lastNameValid(String lastName) {
-        return lastName.matches(lastNameReg);
+    private boolean lastNameValid(String last_name) {
+        return last_name.matches(lastNameReg);
     }
     private boolean departmentValid(String department) {
         return department.matches(departmentReg);
@@ -298,7 +299,7 @@ public class DB_GUI_Controller implements Initializable {
     private boolean emailValid(String email) {
         return email.matches(emailReg);
     }
-    private boolean imageValid(String file) {
-        return file.matches(imageReg);
+    private boolean imageValid(String imageURL) {
+        return imageURL.matches(imageReg);
     }
 }
