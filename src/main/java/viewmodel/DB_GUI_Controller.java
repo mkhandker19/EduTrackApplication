@@ -50,7 +50,8 @@ public class DB_GUI_Controller implements Initializable {
     private Button  addBtn;
     @FXML
     private Button clearBtn;
-    TextField first_name, last_name, department, major, email, imageURL;
+    @FXML
+    private TextField first_name, last_name, department, major, email, imageURL;
     @FXML
     ImageView img_view;
     @FXML
