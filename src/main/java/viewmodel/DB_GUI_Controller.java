@@ -86,7 +86,31 @@ public class DB_GUI_Controller implements Initializable {
             editBtn.setDisable(!isSelected);
             deleteBtn.setDisable(!isSelected);
         });
+        initializeFormValidation();
+    }
 
+    private void initializeFormValidation() {
+        // These are listeners for the form field
+        first_name.textProperty().addListener((observable, oldValue, newValue) -> validateForm());
+        last_name.textProperty().addListener((observable, oldValue, newValue) -> validateForm());
+        department.textProperty().addListener((observable, oldValue, newValue) -> validateForm());
+        major.textProperty().addListener((observable, oldValue, newValue) -> validateForm());
+        email.textProperty().addListener((observable, oldValue, newValue) -> validateForm());
+        imageURL.textProperty().addListener((observable, oldValue, newValue) -> validateForm());
+
+        // Initial validation check method
+        validateForm();
+    }
+
+    //Ensures the conditions of the RegEx pattern are met in form fields and if they are Add button is enabled. It is disabled otherwise.
+    private void validateForm() {
+        boolean isFormValid = firstNameValid(first_name.getText()) &&
+                lastNameValid(last_name.getText()) &&
+                departmentValid(department.getText()) &&
+                majorValid(major.getText()) &&
+                emailValid(email.getText()) &&
+                imageValid(imageURL.getText());
+        addBtn.setDisable(!isFormValid);
     }
 
     @FXML
