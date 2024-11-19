@@ -56,6 +56,8 @@ public class DB_GUI_Controller implements Initializable {
     ImageView img_view;
     @FXML
     MenuBar menuBar;
+    @FXML
+    private ComboBox<Major> majorDropdown;
     private static final String firstNameReg = "(\\w){2,25}";
     private static final String lastNameReg = "(\\w){2,25}";
     private static final String departmentReg = "(\\w){2,25}";
@@ -87,6 +89,7 @@ public class DB_GUI_Controller implements Initializable {
             deleteBtn.setDisable(!isSelected);
         });
         initializeFormValidation();
+        majorDropdown.getItems().addAll(Major.values());
     }
 
     private void initializeFormValidation() {
@@ -97,7 +100,6 @@ public class DB_GUI_Controller implements Initializable {
         major.textProperty().addListener((observable, oldValue, newValue) -> validateForm());
         email.textProperty().addListener((observable, oldValue, newValue) -> validateForm());
         imageURL.textProperty().addListener((observable, oldValue, newValue) -> validateForm());
-
         // Initial validation check method
         validateForm();
     }
@@ -107,10 +109,15 @@ public class DB_GUI_Controller implements Initializable {
         boolean isFormValid = firstNameValid(first_name.getText()) &&
                 lastNameValid(last_name.getText()) &&
                 departmentValid(department.getText()) &&
-                majorValid(major.getText()) &&
+                majorValid(majorDropdown.getValue()) &&
                 emailValid(email.getText()) &&
                 imageValid(imageURL.getText());
         addBtn.setDisable(!isFormValid);
+    }
+
+    private boolean majorValid(Major major) {
+        // Checks if major dropdown is not null and ensures one is selected
+        return major != null;
     }
 
     @FXML
