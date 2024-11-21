@@ -21,11 +21,13 @@ import javafx.stage.Stage;
 import model.Person;
 import service.MyLogger;
 
-import java.io.File;
+import java.io.*;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.io.File;
+import javafx.stage.FileChooser;
 
 public class DB_GUI_Controller implements Initializable {
     @FXML
@@ -58,6 +60,8 @@ public class DB_GUI_Controller implements Initializable {
     MenuBar menuBar;
     @FXML
     private ComboBox<Major> majorDropdown;
+    @FXML
+    private MenuItem importMenuItem, exportMenuItem;
     private static final String firstNameReg = "(\\w){2,25}";
     private static final String lastNameReg = "(\\w){2,25}";
     private static final String departmentReg = "(\\w){2,25}";
@@ -308,5 +312,77 @@ public class DB_GUI_Controller implements Initializable {
     }
     private boolean imageValid(String imageURL) {
         return imageURL.matches(imageReg);
+    }
+    private void exportDataToCSV(File file) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+            // Iterate through the data in your TableView
+            for (Person person : data) { // Replace 'Person' with your model class
+                String line = String.join(",",
+                        person.getFirstName(), // Replace with actual getters
+                        person.getLastName(),
+                        person.getDepartment(),
+                        person.getMajor(),
+                        person.getEmail(),
+                        person.getImageURL()
+                );
+                bw.write(line); // Write the CSV line
+                bw.newLine();   // Move to the next line
+            }
+            System.out.println("CSV file exported successfully!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleExportCSV(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Export CSV File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+
+        File file = fileChooser.showSaveDialog(null); // Show the save dialog
+        if (file != null) {
+            exportDataToCSV(file);
+        }
+    }
+
+
+    private void importDataFromCSV(File file) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(","); // Assuming values are comma-separated
+                if (values.length >= 6) { // Ensure there are enough values (adjust based on your model)
+                    // Create a new instance of your model class (e.g., Person)
+                    Person person = new Person(
+                            values[0], // First Name
+                            values[1], // Last Name
+                            values[2], // Department
+                            values[3], // Major
+                            values[4], // Email
+                            values[5]  // Image URL
+                    );
+                    // Add the object to your ObservableList
+                    data.add(person);
+                }
+            }
+            // Update the TableView with the new data
+            tv.setItems(data);
+            System.out.println("CSV data imported successfully!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleImportCSV(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Import CSV File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+
+        File file = fileChooser.showOpenDialog(null); // Show the file chooser
+        if (file != null) {
+            importDataFromCSV(file);
+        }
     }
 }
