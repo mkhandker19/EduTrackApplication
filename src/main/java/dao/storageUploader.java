@@ -1,7 +1,6 @@
 package dao;
 
 import com.azure.storage.blob.BlobClient;
-import com.azure.storage.blob.BlobClientBuilder;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobContainerClientBuilder;
 
@@ -9,12 +8,20 @@ public class storageUploader {
 
     private BlobContainerClient containerClient;
 
-    public StorageUploader( ) {
+    public storageUploader() {
+        String accountName = System.getenv("AZURE_ACCOUNT_NAME");
+        String accountKey = System.getenv("AZURE_ACCOUNT_KEY");
+        String connectionString = String.format(
+                "DefaultEndpointsProtocol=https;AccountName=%s;AccountKey=%s;EndpointSuffix=core.windows.net",
+                accountName, accountKey
+        );
+
         this.containerClient = new BlobContainerClientBuilder()
-                .connectionString("DefaultEndpointsProtocol=https;AccountName=csc311admin;AccountKey=Farmingdale24@oNx2TQroaPQzcXiqPNBm0TimZ+EQHd5vwS1HhYJt9aPmElI8+l4++ASty+glzA==;EndpointSuffix=core.windows.net")
+                .connectionString(connectionString)
                 .containerName("media-files")
                 .buildClient();
     }
+
 
     public void uploadFile(String filePath, String blobName) {
         BlobClient blobClient = containerClient.getBlobClient(blobName);
