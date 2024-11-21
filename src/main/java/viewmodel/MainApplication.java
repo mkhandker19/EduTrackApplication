@@ -23,11 +23,12 @@ public class MainApplication extends Application {
     }
 
     public void start(Stage primaryStage) {
-        Image icon = new Image(getClass().getResourceAsStream("/images/DollarClouddatabase.png"));
+        Image icon = new Image(getClass().getResourceAsStream("/images/EduTrackLogo.png")); //Added EduTrack Logo on top left of screen
         this.primaryStage = primaryStage;
         this.primaryStage.setResizable(false);
         primaryStage.getIcons().add(icon);
-        primaryStage.setTitle("FSC CSC311 _ Database Project");
+        primaryStage.setTitle("EduTrack");//Personal branding title
+
         showScene1();
     }
 
