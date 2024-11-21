@@ -41,8 +41,8 @@
                   </Menu>
                         <Menu mnemonicParsing="false" styleClass="menu_options" text="Theme">
                             <items>
-                                <MenuItem mnemonicParsing="false" onAction="#lightTheme" styleClass="menu_items" text="LIGHT THEME" />
-                                <MenuItem mnemonicParsing="false" onAction="#darkTheme" styleClass="menu_items" text="DARK THEME" />
+                                <MenuItem mnemonicParsing="false" onAction="#lightTheme" styleClass="menu_items" text="Light Theme" />
+                                <MenuItem mnemonicParsing="false" onAction="#darkTheme" styleClass="menu_items" text="Dark Theme" />
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" styleClass="menu_options" text="Help">
