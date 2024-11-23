@@ -1,59 +1,64 @@
 package service;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.prefs.Preferences;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class UserSession {
 
-    private static UserSession instance;
+    private static volatile UserSession instance; // Volatile ensures visibility across threads
+    private static final ReentrantLock lock = new ReentrantLock(); // Lock for finer control
 
     private String userName;
-
     private String password;
     private String privileges;
 
     private UserSession(String userName, String password, String privileges) {
         this.userName = userName;
-        this.password = password;
+        this.password = password; // Avoid storing plaintext passwords if possible
         this.privileges = privileges;
-        Preferences userPreferences = Preferences.userRoot();
-        userPreferences.put("USERNAME",userName);
-        userPreferences.put("PASSWORD",password);
-        userPreferences.put("PRIVILEGES",privileges);
     }
 
-
-
-    public static UserSession getInstace(String userName,String password, String privileges) {
-        if(instance == null) {
-            instance = new UserSession(userName, password, privileges);
+    // Thread-safe Singleton Instance Method
+    public static UserSession getInstance(String userName, String password, String privileges) {
+        if (instance == null) {
+            synchronized (UserSession.class) { // Class-level lock
+                if (instance == null) { // Double-checked locking
+                    instance = new UserSession(userName, password, privileges);
+                }
+            }
         }
         return instance;
     }
 
-    public static UserSession getInstace(String userName,String password) {
-        if(instance == null) {
-            instance = new UserSession(userName, password, "NONE");
-        }
-        return instance;
+    public static UserSession getInstance(String userName, String password) {
+        return getInstance(userName, password, "NONE");
     }
-    public String getUserName() {
+
+    // Synchronized Getter for UserName
+    public synchronized String getUserName() {
         return this.userName;
     }
 
-    public String getPassword() {
+    // Synchronized Getter for Password (Consider Avoiding Plaintext Retrieval)
+    public synchronized String getPassword() {
         return this.password;
     }
 
-    public String getPrivileges() {
+    // Synchronized Getter for Privileges
+    public synchronized String getPrivileges() {
         return this.privileges;
     }
 
+    // Clean Session Safely
     public void cleanUserSession() {
-        this.userName = "";// or null
-        this.password = "";
-        this.privileges = "";// or null
+        lock.lock(); // Explicit lock for safety
+        try {
+            this.userName = null;
+            this.password = null;
+            this.privileges = null;
+            instance = null; // Reset instance
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
