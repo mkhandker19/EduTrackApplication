@@ -9,8 +9,8 @@ public class storageUploader {
     private BlobContainerClient containerClient;
 
     public storageUploader() {
-        String accountName = System.getenv("AZURE_ACCOUNT_NAME");
-        String accountKey = System.getenv("AZURE_ACCOUNT_KEY");
+        String accountName = ("khandkercsc311storage");
+        String accountKey = System.getenv("storagekey");
         String connectionString = String.format(
                 "DefaultEndpointsProtocol=https;AccountName=%s;AccountKey=%s;EndpointSuffix=core.windows.net",
                 accountName, accountKey
