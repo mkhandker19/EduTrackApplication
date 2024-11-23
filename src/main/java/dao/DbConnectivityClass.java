@@ -11,7 +11,7 @@ public class DbConnectivityClass {
         MyLogger lg= new MyLogger();
     final static String SQL_SERVER_URL = "jdbc:mysql://csc311khandkerserver.mysql.database.azure.com";//update this server name
     private static String csc311khandkerserver;
-    final static String DB_URL = "jdbc:mysql://csc311khandkerserver.mysql.database.azure.com/"+csc311khandkerserver;//update this database name
+    final static String DB_URL = SQL_SERVER_URL + "/" + DB_NAME; //update this database name
         final static String USERNAME = "csc311admin";// update this username
         final static String PASSWORD = "farmingdale24@";// update this password
 
