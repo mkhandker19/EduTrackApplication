@@ -260,5 +260,43 @@ public class DbConnectivityClass {
             return false; // Return false in case of an error
         }
     }
+    public boolean registerUser(String username, String password) {
+        connectToDatabase();
+        try {
+            // Check if the username already exists
+            if (isUsernameExists(username)) {
+                lg.makeLog("Username already exists: " + username);
+                return false;
+            }
+
+            // Establish connection to the database
+            Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+
+            // SQL query to insert new user
+            String sql = "INSERT INTO users (username, password) VALUES (?, ?)";
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password); // Directly storing password (not hashed)
+
+            // Execute the query and check if it was successful
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            // Close resources
+            preparedStatement.close();
+            conn.close();
+
+            if (rowsAffected > 0) {
+                lg.makeLog("User registered successfully: " + username);
+                return true;
+            } else {
+                lg.makeLog("Failed to register user: " + username);
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // Return false in case of any error
+        }
+    }
+
 
 }

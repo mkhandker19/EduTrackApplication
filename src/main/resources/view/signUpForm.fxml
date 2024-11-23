@@ -33,36 +33,44 @@
                 <Insets bottom="5.0" top="5.0" />
             </VBox.margin>
         </Button>
+
         <!-- Username Field -->
         <VBox spacing="5">
             <Label text="Username:" />
-            <TextField fx:id="nameField" prefHeight="40" />
+            <TextField fx:id="usernameField" prefHeight="40" />
         </VBox>
 
         <!-- Password Field -->
         <VBox spacing="5">
             <Label text="Password:">
-            <font>
-               <Font name="Book Antiqua" size="12.0" />
-            </font></Label>
+                <font>
+                    <Font name="Book Antiqua" size="12.0" />
+                </font>
+            </Label>
             <PasswordField fx:id="passwordField" prefHeight="40" />
+        </VBox>
+
+        <!-- Confirm Password Field -->
+        <VBox spacing="5">
+            <Label text="Confirm Password:">
+                <font>
+                    <Font name="Book Antiqua" size="12.0" />
+                </font>
+            </Label>
+            <PasswordField fx:id="confirmPasswordField" prefHeight="40" />
         </VBox>
 
         <!-- Buttons Section -->
         <HBox alignment="CENTER" spacing="15">
-            <Button fx:id="submitButton" prefHeight="40" prefWidth="100" text="Submit">
-            <font>
-               <Font name="Book Antiqua" size="15.0" />
-            </font></Button>
-            <Button fx:id="cancelButton" prefHeight="40" prefWidth="100" text="Cancel" textFill="RED">
-            <font>
-               <Font name="Book Antiqua" size="15.0" />
-            </font></Button>
+            <Button fx:id="submitButton" prefHeight="40" onAction="#handleSubmit" prefWidth="100" text="Submit">
+                <font>
+                    <Font name="Book Antiqua" size="15.0" />
+                </font></Button>
         </HBox>
     </VBox>
-   <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="425.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
-      <image>
-         <Image url="@../images/School-Download-PNG.png" />
-      </image>
-   </ImageView>
+    <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="425.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
+        <image>
+            <Image url="@../images/School-Download-PNG.png" />
+        </image>
+    </ImageView>
 </AnchorPane>

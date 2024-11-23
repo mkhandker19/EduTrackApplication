@@ -17,7 +17,8 @@ import java.security.NoSuchAlgorithmException;
 
 
 public class SignupController {
-
+    @FXML
+    private Button submitButton;
     @FXML
     private TextField usernameField;
 
@@ -30,29 +31,36 @@ public class SignupController {
     @FXML
     private Label statusLabel;
 
-    // Handle the "Submit" button action
     @FXML
     private void handleSubmit() {
-            String username = usernameField.getText().trim();
-            String password = passwordField.getText();
-            String confirmPassword = confirmPasswordField.getText();
+        // Retrieve input values
+        String username = usernameField.getText().trim();
+        String password = passwordField.getText();
+        String confirmPassword = confirmPasswordField.getText();
 
-            if (validateInputs(username, password, confirmPassword)) {
-                // Save to database
-                if (saveToDatabase(username, password)) { // Pass plain text password
-                    statusLabel.setText("Account created successfully!");
-                    clearFields();
+        // Validate inputs
+        if (validateInputs(username, password, confirmPassword)) {
+            // Attempt to save the user to the database
+            if (saveToDatabase(username, password)) {
+                statusLabel.setText("Account created successfully!");
+                clearFields();
 
-                    // Navigate to login or main page (optional)
+                // Navigate back to the login page after successful registration
+                try {
+                    Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
                     Stage stage = (Stage) usernameField.getScene().getWindow();
-                    stage.close(); // Close signup window
-                } else {
-                    statusLabel.setText("Error: Username already exists.");
+                    stage.setScene(new Scene(root, 900, 600));
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    statusLabel.setText("Error navigating to login page.");
                 }
+            } else {
+                // Handle duplicate username
+                statusLabel.setText("Error: Username already exists.");
             }
         }
-
-
+    }
     private boolean validateInputs(String username, String password, String confirmPassword) {
         if (username.isEmpty() || password.isEmpty()) {
             statusLabel.setText("Fields cannot be empty!");
@@ -129,5 +137,6 @@ public class SignupController {
         passwordField.clear();
         confirmPasswordField.clear();
     }
+
 }
 
