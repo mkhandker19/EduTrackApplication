@@ -25,7 +25,14 @@
                 <Font name="Book Antiqua" size="25.0" />
             </font>
         </Label>
-
+        <Button fx:id="goBackBtn" alignment="CENTER" mnemonicParsing="false" onAction="#goBack" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: Gray; -fx-border-color: BLACK;" text="Go Back" textFill="WHITE">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+            <VBox.margin>
+                <Insets bottom="5.0" top="5.0" />
+            </VBox.margin>
+        </Button>
         <!-- Username Field -->
         <VBox spacing="5">
             <Label text="Username:" />

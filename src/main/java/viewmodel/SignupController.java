@@ -3,12 +3,14 @@ package viewmodel;
 import dao.DbConnectivityClass;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import model.Person;
 
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -50,13 +52,6 @@ public class SignupController {
             }
         }
 
-        // Handle the "Back" button action
-    @FXML
-    private void handleBack() {
-        Stage stage = (Stage) usernameField.getScene().getWindow();
-        stage.close(); // Close current window
-        // Open the previous login/signup page (implement logic here)
-    }
 
     private boolean validateInputs(String username, String password, String confirmPassword) {
         if (username.isEmpty() || password.isEmpty()) {
@@ -102,13 +97,28 @@ public class SignupController {
         }
     }
 
+
     @FXML
-    private void handleContinueToSignUpForm() {
+    private void goBack(javafx.event.ActionEvent actionEvent) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/signUpForm.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) continueButton.getScene().getWindow(); // Replace with your button's fx:id
-            stage.setScene(new Scene(root));
+            Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
+            Scene scene = new Scene(root, 900, 600);
+            scene.getStylesheets().add(getClass().getResource("/css/lightTheme.css").toExternalForm());
+            Stage window = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            window.setScene(scene);
+            window.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void continueToSignUpForm(javafx.event.ActionEvent actionEvent) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/view/signUpForm.fxml"));
+            Scene scene = new Scene(root, 900, 600);
+            scene.getStylesheets().add(getClass().getResource("/css/lightTheme.css").toExternalForm());
+            Stage window = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            window.setScene(scene);
+            window.show();
         } catch (IOException e) {
             e.printStackTrace();
         }

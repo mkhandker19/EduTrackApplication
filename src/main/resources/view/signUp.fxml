@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<GridPane alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1100.0" style="-fx-border-color: BLACK;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="viewmodel.SignUpController">
+<GridPane alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1100.0" style="-fx-border-color: BLACK;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="viewmodel.SignupController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="460.0" minWidth="10.0" prefWidth="162.0" />
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="460.0" minWidth="10.0" prefWidth="196.0" />
@@ -56,7 +56,7 @@
         <VBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="8" />
         <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="9">
             <children>
-                <Button fx:id="newAccountBtn" mnemonicParsing="false" onAction="#createNewAccount" prefHeight="43.0" prefWidth="199.0" style="-fx-background-color: GREY; -fx-border-color: BLACK;" text="Create New Account" textAlignment="CENTER" textFill="WHITE">
+                <Button fx:id="newAccountBtn" mnemonicParsing="false" onAction="#continueToSignUpForm" prefHeight="43.0" prefWidth="199.0" style="-fx-background-color: GREY; -fx-border-color: BLACK;" text="Create New Account" textAlignment="CENTER" textFill="WHITE">
                     <VBox.margin>
                         <Insets bottom="5.0" top="5.0" />
                     </VBox.margin>

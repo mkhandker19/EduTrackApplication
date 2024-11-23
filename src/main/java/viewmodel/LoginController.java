@@ -12,11 +12,9 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-
+import java.awt.*;
 
 public class LoginController {
-
 
     @FXML
     private GridPane rootpane;
@@ -71,6 +69,4 @@ public class LoginController {
             e.printStackTrace();
         }
     }
-
-
 }
