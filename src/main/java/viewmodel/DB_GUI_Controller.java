@@ -53,7 +53,7 @@ public class DB_GUI_Controller implements Initializable {
     @FXML
     private Button clearBtn;
     @FXML
-    private TextField first_name, last_name, department, major, email, imageURL;
+    private TextField first_name, last_name, department, major, email, imageURL, password;
     @FXML
     ImageView img_view;
     @FXML
@@ -128,7 +128,7 @@ public class DB_GUI_Controller implements Initializable {
     protected void addNewRecord() {
 
             Person p = new Person(first_name.getText(), last_name.getText(), department.getText(),
-                    major.getText(), email.getText(), imageURL.getText());
+                    major.getText(), email.getText(), imageURL.getText(), password.getText());
             cnUtil.insertUser(p);
             cnUtil.retrieveId(p);
             p.setId(cnUtil.retrieveId(p));
@@ -360,7 +360,8 @@ public class DB_GUI_Controller implements Initializable {
                             values[2], // Department
                             values[3], // Major
                             values[4], // Email
-                            values[5]  // Image URL
+                            values[5],  // Image URL
+                            values[6] //password
                     );
                     // Add the object to your ObservableList
                     data.add(person);

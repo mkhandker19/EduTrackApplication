@@ -232,4 +232,33 @@ public class DbConnectivityClass {
             lg.makeLog(String.valueOf(id));
             return id;
         }
+    public boolean isUsernameExists(String username) {
+        connectToDatabase(); // Ensure this initializes the database connection
+        try {
+            // Establish a connection to the database
+            Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+
+            // SQL query to check for existing username
+            String sql = "SELECT COUNT(*) FROM users WHERE first_name = ?";
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setString(1, username);
+
+            // Execute the query and check the result
+            ResultSet resultSet = preparedStatement.executeQuery();
+            boolean exists = false;
+            if (resultSet.next()) {
+                exists = resultSet.getInt(1) > 0; // Check if any record exists
+            }
+
+            // Close resources
+            preparedStatement.close();
+            conn.close();
+
+            return exists; // Return true if username exists, false otherwise
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // Return false in case of an error
+        }
     }
+
+}
