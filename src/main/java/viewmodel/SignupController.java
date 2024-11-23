@@ -86,12 +86,6 @@ public class SignupController {
             // Create a Person object with placeholder values
             Person person = new Person();
             person.setFirstName(username);  // Use the username as the first name
-            person.setLastName("N/A");      // Placeholder for the last name
-            person.setDepartment("N/A");   // Placeholder for the department
-            person.setMajor("N/A");        // Placeholder for the major
-            person.setEmail(username + "@example.com"); // Placeholder email
-            person.setImageURL("");        // Leave Image URL empty
-
             // Store the plain text password as part of the user session (optional)
             person.setPassword(password);  // Add this to your Person model if needed
 

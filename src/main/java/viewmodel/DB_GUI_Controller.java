@@ -29,7 +29,7 @@ import java.util.ResourceBundle;
 import java.io.File;
 import javafx.stage.FileChooser;
 
-public class DB_GUI_Controller implements Initializable {
+public class DB_GUI_Controller<Item> implements Initializable {
     @FXML
     private TableView<Person> tv;
     @FXML
@@ -386,4 +386,5 @@ public class DB_GUI_Controller implements Initializable {
             importDataFromCSV(file);
         }
     }
-}
+
+    }

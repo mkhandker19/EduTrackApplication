@@ -13,9 +13,31 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.awt.*;
+import java.io.IOException;
+
+import dao.DbConnectivityClass;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.fxml.FXMLLoader;
+
 
 public class LoginController {
+    @FXML
+    private TextField usernameField;
 
+    @FXML
+    private PasswordField passwordField;
+
+    @FXML
+    private Label statusLabel;
+
+    private DbConnectivityClass dbConnectivityClass;
     @FXML
     private GridPane rootpane;
     public void initialize() {
@@ -35,6 +57,7 @@ public class LoginController {
         fadeOut2.setFromValue(0);
         fadeOut2.setToValue(1);
         fadeOut2.play();
+        dbConnectivityClass = new DbConnectivityClass(); // Ensure database connectivity class is initialized
     }
     private static BackgroundImage createImage(String url) {
         return new BackgroundImage(
@@ -69,4 +92,51 @@ public class LoginController {
             e.printStackTrace();
         }
     }
-}
+    @FXML
+    private void handleLogin() {
+        // Retrieve input from username and password fields
+        String username = usernameField.getText().trim();
+        String password = passwordField.getText().trim();
+
+        // Check if fields are empty
+        if (username.isEmpty() || password.isEmpty()) {
+            statusLabel.setText("Please enter both username and password.");
+            return;
+        }
+
+        // Call the database validation method
+        DbConnectivityClass dbConnectivityClass = null;
+        boolean isValidUser = dbConnectivityClass.validateLogin(username, password);
+
+        if (isValidUser) {
+            statusLabel.setText("Login successful!");
+            navigateToMainPage(); // Navigate to the main page of the application
+        } else {
+            statusLabel.setText("Invalid username or password.");
+        }
+    }
+    private void navigateToMainPage() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/view/MainPage.fxml")); // Adjust path as needed
+            Stage stage = (Stage) usernameField.getScene().getWindow(); // Assuming you use the login window
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            statusLabel.setText("Error loading main application page.");
+        }
+    }
+
+        private void navigateToMainApp() {
+            try {
+                Parent root = FXMLLoader.load(getClass().getResource("/view/mainApp.fxml"));
+                Stage stage = (Stage) usernameField.getScene().getWindow();
+                stage.setScene(new Scene(root, 900, 600));
+                stage.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                statusLabel.setText("Error loading main application.");
+            }
+        }
+    }
+

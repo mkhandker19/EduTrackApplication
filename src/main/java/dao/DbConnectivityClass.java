@@ -2,6 +2,8 @@ package dao;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.layout.GridPane;
 import model.Person;
 import service.MyLogger;
 
@@ -297,6 +299,33 @@ public class DbConnectivityClass {
             return false; // Return false in case of any error
         }
     }
+    public boolean validateLogin(String username, String password) {
+        connectToDatabase(); // Ensure database connection
 
+        try {
+            // Establish a connection to the database
+            Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
 
+            // SQL query to check if the username and password match
+            String sql = "SELECT * FROM users WHERE first_name = ? AND password = ?";
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+
+            // Execute the query
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            boolean isValidUser = resultSet.next(); // If a record is found, the login is valid
+
+            // Close resources
+            resultSet.close();
+            preparedStatement.close();
+            conn.close();
+
+            return isValidUser;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // Return false if there's an error
+        }
+    }
 }
