@@ -10,6 +10,6 @@ public class SplashScreenController {
     @FXML
     protected void onButtonClick() {
 
-        welcomeText.setText("Welcome to JavaFX Application!");
+        welcomeText.setText("Welcome to EduTrack!");
     }
 }

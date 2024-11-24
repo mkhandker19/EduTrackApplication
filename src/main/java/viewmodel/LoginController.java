@@ -80,18 +80,18 @@ public class LoginController {
         }
     }
 
-    public void signUp(ActionEvent actionEvent) {
+    @FXML
+    public void signUp() {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/view/signUp.fxml"));
-            Scene scene = new Scene(root, 900, 600);
-            scene.getStylesheets().add(getClass().getResource("/css/lightTheme.css").toExternalForm());
-            Stage window = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-            window.setScene(scene);
-            window.show();
-        } catch (Exception e) {
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     @FXML
     private void handleLogin() {
         // Retrieve input from username and password fields
@@ -138,5 +138,20 @@ public class LoginController {
                 statusLabel.setText("Error loading main application.");
             }
         }
+
+
+    public void lightTheme(ActionEvent actionEvent) {
+        try {
+            Scene scene = rootpane.getScene(); // Use rootpane instead of menuBar
+            Stage stage = (Stage) scene.getWindow();
+            scene.getStylesheets().clear();
+            scene.getStylesheets().add(getClass().getResource("/css/lightTheme.css").toExternalForm());
+            stage.setScene(scene);
+            stage.show();
+            System.out.println("light " + scene.getStylesheets());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+}
 
