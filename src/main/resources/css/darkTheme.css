@@ -1,140 +1,172 @@
-.anchor_pane {
-    -fx-background-color: black;
-}
-
 .db_btn {
-    -fx-background-color: #555;
-    -fx-radius: 2;
+    -fx-background-color: #6A1E55;
     -fx-cursor: hand;
     -fx-font-family: "Arial";
     -fx-font-size: 15px;
     -fx-text-alignment: center;
-    -fx-text-fill: #d5d5d5;
+    -fx-text-fill: #A64D79;
     -fx-alignment: CENTER;
     -fx-background-radius: 10;
     -fx-pref-width: 200px;
     -fx-pref-height: 50px;
-    -fx-text-fill: white;
 }
 
 .left_pane {
-    -fx-background-color: #313131;
+    -fx-background-color: #3B1C32;
     -fx-pref-width: 130px;
     -fx-pref-height: 600px;
-        -fx-text-fill: white;
 }
 
 .admin_section {
-    -fx-background-color: #000000;
+    -fx-background-color: #1A1A1D;
 }
 
 .table_columns {
-    -fx-background-color: #171616;
-    -fx-text-fill: #e7e1e1;
+    -fx-background-color: #3B1C32;
+    -fx-text-fill: #A64D79;
 }
 
-
-.menu_bar{
-    -fx-background-color: black;
+.menu_bar {
+    -fx-background-color: #1A1A1D;
 }
 
-.menu_bar .label{
-    -fx-background-color: black;
-    -fx-font-size: 15 pt;
-        -fx-text-fill: white;
+.anchor_pane {
+    -fx-background-color: #3B1C32;
 }
 
-.menu_options .label{
-    -fx-background-color: black;
-        -fx-text-fill: white;
-
-}
-.menu_items{
-    -fx-background-color: black;
-}
 .text_field_pane {
-    -fx-background-color: #424242;
+    -fx-background-color: #3B1C32;
 }
 
-.text_field {
-    -fx-background-color: black;
-    -fx-text-fill: white;
-}
-
-
-
-.image_view{
-    -fx-background-color: black;
-    -fx-border-color: white;
+.image_view {
+    -fx-background-color: #6A1E55;
+    -fx-border-color: #A64D79;
     -fx-border-width: 2;
-    -fx-stroke: white;
 }
-.table-view:focused .table-row-cell:selected .table-cell {
-    -fx-background-color: lightBlue;
-    -fx-text-fill: grey;
-}
+
 .table-view .column-header,
 .table-view .column-header-background .filler {
-    -fx-background-color:  #6622CC;
+    -fx-background-color: #3B1C32;
+    -fx-text-fill: #A64D79;
 }
-.table-view .column-header .label{
-   -fx-text-fill: white;
-   -fx-font-weight: bold;
-   -fx-alignment: CENTER_LEFT;
-}
-.table-view .cell{
-   -fx-cell-size: 35;
-  -fx-alignment: center-left;
-  -fx-background-color: #444;
-  -fx-border-color: #29292D;
-  -fx-text-fill: lightgray;
-  -fx-alignment: CENTER_LEFT;
 
+.table-view .column-header .label {
+    -fx-text-fill: #A64D79;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER_LEFT;
 }
+
+.table-view .cell {
+    -fx-cell-size: 35;
+    -fx-alignment: center-left;
+    -fx-background-color: #1A1A1D;
+    -fx-border-color: #3B1C32;
+    -fx-text-fill: #A64D79;
+    -fx-border-width: 0.0;
+}
+
 .table-row-cell:selected {
-   -fx-background-color: whitesmoke;
-   -fx-text-background-color:  #aa22CC;
+    -fx-background-color: #6A1E55;
+    -fx-text-fill: #A64D79;
 }
 
-/* scroll bar starts here */
-
-/* The increment and decrement button CSS class of scrollbar */
-.table-view .increment-button ,.table-view .decrement-button {
-    -fx-background-color:transparent;
-	-fx-background-radius: 2em;
-
+.table-view:focused .table-row-cell:selected .table-cell {
+    -fx-background-color: #3B1C32;
+    -fx-text-fill: #6A1E55;
 }
 
-/* The main scrollbar **track** CSS class  */
+.table-view .increment-button,
+.table-view .decrement-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 2em;
+}
+
 .table-view .scroll-bar:horizontal .track,
-.table-view .scroll-bar:vertical .track{
-	-fx-background-color: transparent;
-	-fx-border-color:derive( #6622CC,80%);
-
-	-fx-background-radius: 2em;
-	-fx-border-radius:2em;
+.table-view .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+    -fx-border-color: derive(#6A1E55, 80%);
+    -fx-background-radius: 2em;
+    -fx-border-radius: 2em;
 }
 
-/* The main scrollbar **thumb** CSS class which we drag every time (movable) */
 .table-view .scroll-bar:horizontal .thumb,
 .table-view .scroll-bar:vertical .thumb {
-    -fx-background-color:derive( #6622CC,90%);
-	-fx-background-insets: 2, 0, 0;
-	-fx-background-radius: 2em;
-
+    -fx-background-color: derive(#A64D79, 90%);
+    -fx-background-insets: 1, 0, 0;
+    -fx-background-radius: 2em;
 }
-/* Signup Page Specific Styling */
-.anchor_pane {
-    -fx-background-color: #121212; /* Dark background */
+
+.table-row-cell:filled .cell {
+    -fx-border-width: 0.3;
+}
+
+.table-view-cell:empty {
+    -fx-background-color: #1A1A1D;
+    -fx-border-width: 0.0;
+}
+
+.welcome_label {
+    -fx-font-size: 24px;
+    -fx-text-fill: #A64D79;
+    -fx-font-weight: bold;
+}
+
+.splash-image {
+    -fx-background-color: transparent;
+    -fx-border-color: #6A1E55;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+}
+
+.login_title {
+    -fx-font-size: 36px;
+    -fx-text-fill: #A64D79;
+    -fx-font-weight: bold;
+}
+
+.login_text_field, .login_password_field {
+    -fx-background-color: #1A1A1D;
+    -fx-border-color: #3B1C32;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #A64D79;
+}
+
+.login_button {
+    -fx-background-color: #6A1E55;
+    -fx-border-color: #A64D79;
+    -fx-text-fill: #1A1A1D;
+    -fx-border-radius: 5px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+}
+
+.about_textarea {
+    -fx-background-color: #1A1A1D;
+    -fx-text-fill: #A64D79;
+    -fx-font-family: "Arial";
+    -fx-font-size: 16px;
+    -fx-padding: 10px;
+    -fx-border-color: #6A1E55;
+    -fx-border-width: 1px;
+}
+
+.about_label {
+    -fx-font-family: "System";
+    -fx-font-weight: bold;
+    -fx-font-size: 26px;
+    -fx-text-fill: #A64D79;
+    -fx-padding: 5px 0 10px 0;
 }
 
 .text_field {
-    -fx-background-color: #333333; /* Dark gray background for text fields */
-    -fx-text-fill: #ffffff; /* White text */
+    -fx-background-color: #1A1A1D;
+    -fx-text-fill: #A64D79;
     -fx-font-family: "Arial";
     -fx-font-size: 14px;
     -fx-padding: 10px;
-    -fx-border-color: #555;
+    -fx-border-color: #6A1E55;
     -fx-border-width: 1px;
     -fx-background-radius: 5px;
 }
@@ -143,13 +175,13 @@
     -fx-font-family: "System";
     -fx-font-weight: bold;
     -fx-font-size: 16px;
-    -fx-text-fill: #cccccc; /* Light gray text */
+    -fx-text-fill: #6A1E55;
     -fx-padding: 5px;
 }
 
 .signup_button {
-    -fx-background-color: #444444; /* Gray background for buttons */
-    -fx-text-fill: white;
+    -fx-background-color: #A64D79;
+    -fx-text-fill: #1A1A1D;
     -fx-font-size: 14px;
     -fx-font-family: "Arial";
     -fx-padding: 10px 20px;
@@ -159,5 +191,9 @@
 }
 
 .signup_button:hover {
-    -fx-background-color: #222222; /* Darker gray on hover */
+    -fx-background-color: #3B1C32;
+}
+
+.grid_pane {
+    -fx-background-color: #1A1A1D;
 }
