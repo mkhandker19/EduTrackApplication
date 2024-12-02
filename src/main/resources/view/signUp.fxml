@@ -8,69 +8,72 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="730.0" prefWidth="996.0" styleClass="anchor_pane" stylesheets="@../css/lightTheme.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="viewmodel.SignupController">
 
-    <VBox alignment="CENTER" layoutX="358.0" layoutY="124.0" spacing="15">
+    <VBox alignment="CENTER" layoutX="358.0" layoutY="-1.0" prefHeight="730.0" prefWidth="297.0" spacing="15" GridPane.columnIndex="8" GridPane.rowIndex="1">
         <padding>
             <Insets bottom="40" left="40" right="40" top="40" />
         </padding>
-
+   
         <!-- Header Label -->
         <Label text="EduTrack Signup">
             <font>
                 <Font name="Book Antiqua" size="25.0" />
             </font>
         </Label>
-        <Button fx:id="goBackBtn" mnemonicParsing="false" onAction="#goBack" prefHeight="40.0" prefWidth="200.0" styleClass="text_field" text="Go Back" textFill="#0d0000">
-            <font>
-                <Font name="Book Antiqua" size="15.0" />
-            </font>
-            <VBox.margin>
-                <Insets bottom="5.0" top="5.0" />
-            </VBox.margin>
-        </Button>
+       <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+           <image>
+               <Image url="@../images/School-Download-PNG.png" />
+           </image>
+       </ImageView>
 
         <!-- Username Field -->
-        <VBox spacing="5">
-            <Label text="Username:" />
-            <TextField fx:id="usernameField" prefHeight="40" styleClass="text_field" />
-        </VBox>
+        <VBox spacing="5" />
 
         <!-- Password Field -->
         <VBox spacing="5">
-            <Label text="Password:">
-                <font>
-                    <Font name="Book Antiqua" size="12.0" />
-                </font>
-            </Label>
-            <PasswordField fx:id="passwordField" prefHeight="40" styleClass="text_field" />
+         <TextField fx:id="usernameField" layoutX="10.0" layoutY="145.0" prefHeight="40" promptText="Username" styleClass="text_field" />
+            <PasswordField fx:id="confirmPasswordField" prefHeight="40" promptText="strong password" styleClass="text_field" />
+            <PasswordField fx:id="passwordField" prefHeight="40" promptText="strong password" styleClass="text_field" />
+            <TextField fx:id="emailField" prefHeight="40" promptText="example@domain.com" styleClass="text_field" />
         </VBox>
 
         <!-- Confirm Password Field -->
-        <VBox alignment="CENTER" spacing="5">
-            <Label text="Confirm Password:">
-                <font>
-                    <Font name="Book Antiqua" size="12.0" />
-                </font>
-            </Label>
-            <PasswordField fx:id="confirmPasswordField" prefHeight="40" styleClass="text_field" />
-        </VBox>
-        <Button fx:id="submitButton" onAction="#handleSubmit" prefHeight="40" prefWidth="100" text="Submit">
+        <VBox alignment="CENTER" spacing="5" />
+        <Label fx:id="statusLabel" text="" textFill="red" />
+      <VBox layoutX="50.0" layoutY="174.0" spacing="5" />
+        <!-- Buttons Section -->
+        <HBox alignment="CENTER" spacing="15" />
+        <Button fx:id="submitBtn" onAction="#createNewAccount" prefHeight="40" prefWidth="100" styleClass="submit_button" text="Submit">
             <font>
                 <Font name="Book Antiqua" size="15.0" />
             </font>
         </Button>
-        <Label fx:id="statusLabel" text="" textFill="red" />
-        <!-- Buttons Section -->
-        <HBox alignment="CENTER" spacing="15" />
+      <Button fx:id="goBackBtn" onAction="#goBack" prefHeight="40" prefWidth="100" styleClass="submit_button" text="Back">
+         <font>
+            <Font name="Book Antiqua" size="15.0" />
+         </font>
+      </Button>
     </VBox>
-    <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="417.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
-        <image>
-            <Image url="@../images/School-Download-PNG.png" />
-        </image>
-    </ImageView>
+      <Label layoutX="274.0" layoutY="309.0" text="Username:" />
+      <Label layoutX="274.0" layoutY="356.0" text="Password:">
+          <font>
+              <Font name="Book Antiqua" size="12.0" />
+          </font>
+      </Label>
+      <Label layoutX="274.0" layoutY="398.0" text="Confirm Password:">
+          <font>
+              <Font name="Book Antiqua" size="12.0" />
+          </font>
+      </Label>
+   <Label layoutX="274.0" layoutY="444.0" text="Email:">
+      <font>
+         <Font name="Book Antiqua" size="12.0" />
+      </font>
+   </Label>
 </AnchorPane>

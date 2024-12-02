@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane  stylesheets="@../css/lightTheme.css" fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="920.0" styleClass="anchor_pane" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="viewmodel.DB_GUI_Controller">
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="611.0" prefWidth="905.0" styleClass="anchor_pane" stylesheets="@../css/lightTheme.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="viewmodel.DB_GUI_Controller">
     <children>
         <BorderPane fx:id="borderPane" layoutX="-2.0" layoutY="-3.0" prefHeight="597.0" prefWidth="908.0">
             <top>
@@ -33,10 +33,10 @@
                         </Menu>
                   <Menu mnemonicParsing="false" styleClass="menu_options" text="Edit">
                      <items>
-                        <MenuItem fx:id="editItem" mnemonicParsing="true" styleClass="menu_items" text="Edit       Ctrl+E" accelerator="Ctrl+E" onAction="#handleEdit" />
-                        <MenuItem fx:id="deleteItem" mnemonicParsing="true" styleClass="menu_items" text="Delete        Ctrl+D" accelerator="Ctrl+D" onAction="#handleDelete" />
-                        <MenuItem fx:id="ClearItem" mnemonicParsing="false" styleClass="menu_items" text="Clear        Ctrl+R" accelerator="Ctrl+R" onAction="#handleClear" />
-                        <MenuItem fx:id="CopyItem" mnemonicParsing="false" styleClass="menu_items" text="Copy       Ctrl+C" accelerator="Ctrl+C" onAction="#handleCopy" />
+                        <MenuItem fx:id="editItem" accelerator="Ctrl+E" mnemonicParsing="true" onAction="#editRecord" styleClass="menu_items" text="Edit       Ctrl+E" />
+                        <MenuItem fx:id="deleteItem" accelerator="Ctrl+D" mnemonicParsing="true" onAction="#deleteRecord" styleClass="menu_items" text="Delete        Ctrl+D" />
+                        <MenuItem fx:id="ClearItem" accelerator="Ctrl+R" mnemonicParsing="false" onAction="#clearForm" styleClass="menu_items" text="Clear        Ctrl+R" />
+                        <MenuItem fx:id="CopyItem" accelerator="Ctrl+C" mnemonicParsing="false" onAction="#copyRecord" styleClass="menu_items" text="Copy       Ctrl+C" />
                      </items>
                   </Menu>
                         <Menu mnemonicParsing="false" styleClass="menu_options" text="Theme">
@@ -47,14 +47,14 @@
                         </Menu>
                         <Menu mnemonicParsing="false" styleClass="menu_options" text="Help">
                             <items>
-                                <MenuItem mnemonicParsing="false" onAction="#displayAbout" styleClass="menu_items" text="Help" />
+                                <MenuItem mnemonicParsing="false" onAction="#displayHelp" styleClass="menu_items" text="Help" />
                         <MenuItem mnemonicParsing="false" onAction="#displayAbout" styleClass="menu_items" text="About" />
                             </items>
                         </Menu>
                   <Menu mnemonicParsing="false" text="Actions">
                     <items>
-                      <MenuItem mnemonicParsing="false" onAction="#handleImportCSV" text="Import CSV" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleExportCSV" text="Export CSV" />
+                      <MenuItem mnemonicParsing="false" onAction="#importCSV" text="Import CSV" />
+                        <MenuItem mnemonicParsing="false" onAction="#exportCSV" text="Export CSV" />
                     </items>
                   </Menu>
                     </menus>
@@ -96,7 +96,7 @@
                                 <Insets left="10.0" right="10.0" top="5.0" />
                             </VBox.margin>
                         </TextField>
-                  <ComboBox fx:id="majorDropdown" prefHeight="25.0" prefWidth="185.0" promptText="Major">
+                  <ComboBox fx:id="majorComboBox" prefHeight="48.0" prefWidth="218.0" promptText="Major" styleClass="text_field">
                      <VBox.margin>
                         <Insets left="10.0" right="10.0" top="5.0" />
                      </VBox.margin>
@@ -111,7 +111,7 @@
                                 <Insets left="10.0" right="10.0" top="5.0" />
                             </VBox.margin>
                         </TextField>
-                  <Label prefHeight="6.0" prefWidth="3.0" text=" ">
+                  <Label fx:id="statusLabel" prefHeight="6.0" prefWidth="3.0" text=" ">
                      <VBox.margin>
                         <Insets bottom="40.0" right="20.0" top="40.0" />
                      </VBox.margin>

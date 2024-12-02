@@ -8,22 +8,22 @@ public class Person {
     private String major;
     private String email;
     private String imageURL;
-    private String password;
+
 
     public Person() {
     }
 
-    public Person(String firstName, String lastName, String department, String major, String email,  String imageURL, String password) {
+    public Person(String firstName, String lastName, String department, String major, String email,  String imageURL) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.department = department;
         this.major = major;
         this.email = email;
         this.imageURL = imageURL;
-        this.password = password;
+
     }
 
-    public Person(Integer id, String firstName, String lastName, String department, String major, String email,  String imageURL, String password) {
+    public Person(Integer id, String firstName, String lastName, String department, String major, String email,  String imageURL) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -31,19 +31,10 @@ public class Person {
         this.major = major;
         this.email = email;
         this.imageURL = imageURL;
-        this.password = password;
+
     }
 
     public Person(int id, String firstName, String lastName, String department, String major, String email, String imageURL) {
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    // Setter for password
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getEmail() {

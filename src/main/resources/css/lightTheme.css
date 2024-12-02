@@ -133,7 +133,7 @@
     -fx-text-fill: #78B3CE;
 }
 
-.login_button {
+.login_button, submit_button, back_button {
     -fx-background-color: #F96E2A;
     -fx-border-color: #78B3CE;
     -fx-text-fill: #FBF8EF;
@@ -141,6 +141,8 @@
     -fx-padding: 10px 20px;
     -fx-cursor: hand;
 }
+
+
 
 .about_textarea {
     -fx-background-color: #FBF8EF;

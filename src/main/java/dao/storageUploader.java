@@ -8,17 +8,10 @@ public class storageUploader {
 
     private BlobContainerClient containerClient;
 
-    public storageUploader() {
-        String accountName = ("khandkercsc311storage");
-        String accountKey = System.getenv("storagekey");
-        String connectionString = String.format(
-                "DefaultEndpointsProtocol=https;AccountName=%s;AccountKey=%s;EndpointSuffix=core.windows.net",
-                accountName, accountKey
-        );
-
+    public storageUploader( ) {
         this.containerClient = new BlobContainerClientBuilder()
-                .connectionString(connectionString)
-                .containerName("media-files")
+                .connectionString("DefaultEndpointsProtocol=https;AccountName=csc311khandkerserver;AccountKey=vmhudKETnstd5FUKdF1UnlCa8cpy4HTBN55momq8rhchC3gQm6EEGICE4/XjIZgIjDruRKNLFhEc+AStuj0BKw==;EndpointSuffix=core.windows.net")
+                .containerName("khandkercsc311storage")
                 .buildClient();
     }
 
