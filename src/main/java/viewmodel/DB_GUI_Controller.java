@@ -675,6 +675,7 @@ public class DB_GUI_Controller implements Initializable {
     public void lightTheme(ActionEvent actionEvent) {
         try {
             Scene scene = menuBar.getScene();
+            System.out.println(menuBar.getScene());
             Stage stage = (Stage) scene.getWindow();
             stage.getScene().getStylesheets().clear();
             scene.getStylesheets().add(getClass().getResource("/css/lightTheme.css").toExternalForm());
@@ -689,6 +690,7 @@ public class DB_GUI_Controller implements Initializable {
     public void darkTheme(ActionEvent actionEvent) {
         try {
             Scene scene = menuBar.getScene();
+            System.out.println(menuBar.getScene());
             Stage stage = (Stage) scene.getWindow();
             stage.getScene().getStylesheets().clear();
             scene.getStylesheets().add(getClass().getResource("/css/darkTheme.css").toExternalForm());

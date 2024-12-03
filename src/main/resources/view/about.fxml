@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="anchor_pane" stylesheets="@../css/lightTheme.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="anchor_pane" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label layoutX="19.0" layoutY="64.0" prefHeight="150.0" prefWidth="556.0" styleClass="about_textarea" text="Hello, I am Mahin Khandker and I am a Senior at Farmingdale State College. I am majoring in Computer Science and very excited to present to you the application EduTrack. This application will allow you to keep track of all your students in one allocated location. Having a profile picture will make it easier to remember faces and all their updated information in one table." wrapText="true">
          <font>

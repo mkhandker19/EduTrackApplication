@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="anchor_pane" stylesheets="@../css/lightTheme.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="anchor_pane"  xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <Label layoutX="19.0" layoutY="64.0" prefHeight="150.0" prefWidth="556.0" styleClass="about_textarea" text="This application helps you keep track of all your students. Every semester you meet new students and it can be hard to remember faces as well as names. However, using this application will help you save time of looking through hundreds of documents of who belongs where and shorten your workload. In addition, you can save your memory for other usefull tasks." wrapText="true">
             <font>
