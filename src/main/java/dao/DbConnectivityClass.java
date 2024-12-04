@@ -5,7 +5,7 @@ import model.Person;
 import service.MyLogger;
 import java.sql.*;
 public class DbConnectivityClass {
-    final static String DB_NAME = "CSC311_BD_TEMP";
+    final static String DB_NAME = "csc311_bd_temp";
     MyLogger lg = new MyLogger();
     final static String SQL_SERVER_URL = "jdbc:mysql://csc311khandkerserver.mysql.database.azure.com";
     final static String DB_URL = "jdbc:mysql://csc311khandkerserver.mysql.database.azure.com/" + DB_NAME;
@@ -41,22 +41,6 @@ public class DbConnectivityClass {
         try (Connection conn = DriverManager.getConnection(SQL_SERVER_URL, USERNAME, PASSWORD)) {
             Statement statement = conn.createStatement();
             statement.executeUpdate("CREATE DATABASE IF NOT EXISTS " + DB_NAME);
-
-            try (Connection dbConn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD)) {
-                String sql = """
-                        CREATE TABLE IF NOT EXISTS users (
-                            id INT(10) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-                            first_name VARCHAR(200) NOT NULL,
-                            last_name VARCHAR(200),
-                            department VARCHAR(200),
-                            major VARCHAR(200),
-                            email VARCHAR(200) NOT NULL UNIQUE,
-                            imageURL VARCHAR(200),
-                            password VARCHAR(200) NOT NULL
-                        )
-                        """;
-                dbConn.createStatement().executeUpdate(sql);
-            }
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -64,24 +48,34 @@ public class DbConnectivityClass {
         return true;
     }
 
-    public void insertUser(Person person) {
+
+    public void insertUser(int accountId, String firstName, String lastName, String department, String major, String email, String imageURL) {
         connectToDatabase();
         try (Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD)) {
-            String sql = "INSERT INTO users (first_name, last_name, password) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO users (account_id, first_name, last_name, department, major, email, imageURL) VALUES (?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
-            preparedStatement.setString(1, person.getFirstName());
-            preparedStatement.setString(2, person.getLastName());
+            preparedStatement.setInt(1, accountId); // Link to the account in the accounts table
+            preparedStatement.setString(2, firstName);
+            preparedStatement.setString(3, lastName);
+            preparedStatement.setString(4, department);
+            preparedStatement.setString(5, major);
+            preparedStatement.setString(6, email);
+            preparedStatement.setString(7, imageURL);
             preparedStatement.executeUpdate();
-            lg.makeLog("A new user was inserted successfully.");
+
+            lg.makeLog("User information inserted successfully for account ID: " + accountId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
+
+
+
     public boolean validateLogin(String username, String password) {
         connectToDatabase();
         try (Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD)) {
-            String sql = "SELECT * FROM users WHERE first_name = ? AND password = ?";
+            String sql = "SELECT * FROM accounts WHERE username = ? AND password = ?";
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);
@@ -94,10 +88,12 @@ public class DbConnectivityClass {
         }
     }
 
+
+
     public boolean isUsernameExists(String username) {
         connectToDatabase();
         try (Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD)) {
-            String sql = "SELECT COUNT(*) FROM users WHERE first_name = ?";
+            String sql = "SELECT COUNT(*) FROM accounts WHERE username = ?";
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setString(1, username);
 
@@ -110,50 +106,7 @@ public class DbConnectivityClass {
         }
         return false;
     }
-    public int retrieveId(Person person) {
-        connectToDatabase();
-        int id = -1;
-        try {
-            Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
-            String sql = "SELECT id FROM users WHERE email=?";
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
-            preparedStatement.setString(1, person.getEmail());
 
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                id = resultSet.getInt("id");
-            }
-
-            resultSet.close();
-            preparedStatement.close();
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return id;
-    }
-
-    public void editUser(int id, Person person) {
-        connectToDatabase();
-        try {
-            Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
-            String sql = "UPDATE users SET first_name=?, last_name=?, department=?, major=?, email=?, imageURL=? WHERE id=?";
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
-            preparedStatement.setString(1, person.getFirstName());
-            preparedStatement.setString(2, person.getLastName());
-            preparedStatement.setString(3, person.getDepartment());
-            preparedStatement.setString(4, person.getMajor());
-            preparedStatement.setString(5, person.getEmail());
-            preparedStatement.setString(6, person.getImageURL());
-            preparedStatement.setInt(7, id);
-
-            preparedStatement.executeUpdate();
-            preparedStatement.close();
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void deleteRecord(int id) {
         connectToDatabase();
@@ -170,5 +123,74 @@ public class DbConnectivityClass {
             e.printStackTrace();
         }
     }
+
+    public int insertAccount(String username, String password, String email) {
+        connectToDatabase();
+        int accountId = -1;
+        try (Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD)) {
+            String sql = "INSERT INTO accounts (username, password, email) VALUES (?, ?, ?)";
+            PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+            preparedStatement.setString(3, email);
+            preparedStatement.executeUpdate();
+
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            if (resultSet.next()) {
+                accountId = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return accountId;
+    }
+
+    public int getAccountId(String username) {
+        connectToDatabase();
+        int accountId = -1;
+        try (Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD)) {
+            String sql = "SELECT account_id FROM accounts WHERE username = ?";
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setString(1, username);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                accountId = resultSet.getInt("account_id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return accountId;
+    }
+
+    public void editUser(int userId, int accountId, String firstName, String lastName,
+                         String department, String major, String email, String imageURL) {
+        connectToDatabase();
+        try (Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD)) {
+            String sql = """
+                UPDATE users
+                SET account_id = ?, first_name = ?, last_name = ?, department = ?, 
+                    major = ?, email = ?, imageURL = ?
+                WHERE id = ?
+                """;
+
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setInt(1, accountId);
+            preparedStatement.setString(2, firstName);
+            preparedStatement.setString(3, lastName);
+            preparedStatement.setString(4, department);
+            preparedStatement.setString(5, major);
+            preparedStatement.setString(6, email);
+            preparedStatement.setString(7, imageURL);
+            preparedStatement.setInt(8, userId);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 
 }

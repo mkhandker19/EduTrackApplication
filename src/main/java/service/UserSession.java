@@ -6,63 +6,59 @@ public class UserSession {
 
     private static UserSession instance;
 
-    private String userName;
-    private String password;
-    private String privileges;
+    private int accountId;
+    private String username;
+    private String email;
 
-    // Private constructor initializes the session and stores it in Preferences
-    private UserSession(String userName, String password, String privileges) {
-        this.userName = userName;
-        this.password = password;
-        this.privileges = privileges;
+    // Private constructor for session initialization
+    private UserSession(int accountId, String username, String email) {
+        this.accountId = accountId;
+        this.username = username;
+        this.email = email;
 
-        // Store session data in Preferences
+        // Store session data in Preferences (optional)
         Preferences userPreferences = Preferences.userRoot();
-        userPreferences.put("USERNAME", userName);
-        userPreferences.put("PASSWORD", password);
-        userPreferences.put("PRIVILEGES", privileges);
+        userPreferences.putInt("ACCOUNT_ID", accountId);
+        userPreferences.put("USERNAME", username);
+        userPreferences.put("EMAIL", email);
     }
 
     // Thread-safe Singleton instance creation
-    public static synchronized UserSession getInstance(String userName, String password, String privileges) {
+    public static synchronized UserSession getInstance(int accountId, String username, String email) {
         if (instance == null) {
-            instance = new UserSession(userName, password, privileges);
+            instance = new UserSession(accountId, username, email);
+            System.out.println("User session created for: " + username);
         }
         return instance;
     }
 
-    // Overloaded method with default privileges ("NONE")
-    public static synchronized UserSession getInstance(String userName, String password) {
-        return getInstance(userName, password, "NONE");
+    // Synchronized Getter for accountId
+    public synchronized int getAccountId() {
+        return this.accountId;
     }
 
-    // Synchronized Getter for UserName
-    public synchronized String getUserName() {
-        return this.userName;
+    // Synchronized Getter for username
+    public synchronized String getUsername() {
+        return this.username;
     }
 
-    // Synchronized Getter for Password
-    public synchronized String getPassword() {
-        return this.password;
+    // Synchronized Getter for email
+    public synchronized String getEmail() {
+        return this.email;
     }
 
-    // Synchronized Getter for Privileges
-    public synchronized String getPrivileges() {
-        return this.privileges;
-    }
-
-    // Thread-safe clean user session
-    public synchronized void cleanUserSession() {
+    // Clear session data (both in-memory and Preferences)
+    public synchronized void clearSession() {
         // Clear in-memory data
-        this.userName = "";
-        this.password = "";
-        this.privileges = "";
+        this.accountId = 0;
+        this.username = null;
+        this.email = null;
 
-        // Clear data in Preferences
+        // Clear Preferences (if used)
         Preferences userPreferences = Preferences.userRoot();
+        userPreferences.remove("ACCOUNT_ID");
         userPreferences.remove("USERNAME");
-        userPreferences.remove("PASSWORD");
-        userPreferences.remove("PRIVILEGES");
+        userPreferences.remove("EMAIL");
 
         // Reset the instance
         instance = null;
@@ -71,8 +67,9 @@ public class UserSession {
     @Override
     public String toString() {
         return "UserSession{" +
-                "userName='" + this.userName + '\'' +
-                ", privileges='" + this.privileges + '\'' +
+                "accountId=" + accountId +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }

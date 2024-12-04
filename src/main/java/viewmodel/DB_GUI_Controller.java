@@ -139,122 +139,121 @@ public class DB_GUI_Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
+            // Set up TableView columns
             tv_id.setCellValueFactory(new PropertyValueFactory<>("id"));
             tv_fn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
             tv_ln.setCellValueFactory(new PropertyValueFactory<>("lastName"));
             tv_department.setCellValueFactory(new PropertyValueFactory<>("department"));
             tv_major.setCellValueFactory(new PropertyValueFactory<>("major"));
             tv_email.setCellValueFactory(new PropertyValueFactory<>("email"));
-            tv.setItems(data);
 
+            // Refresh data from the database
+            refreshTableView();
 
+            // Handle keyboard shortcuts for menu items
+            setupKeyboardShortcuts();
 
-            Platform.runLater(() -> {
-                if (menuBar.getScene() != null) {
-                    menuBar.getScene().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-                        // Checks if Ctrl + E is pressed
-                        if (event.isControlDown() && event.getCode() == KeyCode.E) {
-                            // Trigger the editRecord method when Ctrl + E is pressed
-                            editRecord();
-                        }
-                    });
-                }
-            });
+            // Setup actions for menu items
+            setupMenuItemActions();
 
+            // Add listeners for form validation
+            addFormValidationListeners();
 
-            Platform.runLater(() -> {
-                if (menuBar.getScene() != null) {
-                    menuBar.getScene().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-                        // Checks if Ctrl + D is pressed
-                        if (event.isControlDown() && event.getCode() == KeyCode.D) {
-                            // Trigger the deleteRecord method when Ctrl + D is pressed
-                            deleteRecord();
-                        }
-                    });
-                }
-            });
-
-
-            Platform.runLater(() -> {
-                if (menuBar.getScene() != null) {
-                    menuBar.getScene().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-                        // Checks if Ctrl + R is pressed
-                        if (event.isControlDown() && event.getCode() == KeyCode.R) {
-                            // Trigger the clearForm method when Ctrl + R is pressed
-                            clearForm();
-                        }
-                    });
-                }
-            });
-
-
-            Platform.runLater(() -> {
-                if (menuBar.getScene() != null) {
-                    menuBar.getScene().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-                        // Checks if Ctrl + C is pressed
-                        if (event.isControlDown() && event.getCode() == KeyCode.C) {
-                            // Trigger the copyRecord method when Ctrl + C is pressed
-                            copyRecord();
-                        }
-                    });
-                }
-            });
-
-
-            editItem.setOnAction(event -> editRecord());
-            deleteItem.setOnAction(event -> deleteRecord());
-            CopyItem.setOnAction(event -> copyRecord());
-            editBtn.setDisable(true);
-            deleteBtn.setDisable(true);
-            editItem.setDisable(true);
-            deleteItem.setDisable(true);
-            ClearItem.setDisable(true);
-            CopyItem.setDisable(true);
-            // Listener added
-            tv.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Person>() {
-                @Override
-                public void changed(ObservableValue<? extends Person> observable, Person oldValue, Person newValue) {
-                   // Edit button enabled if selected other stays disabled
-                    editBtn.setDisable(newValue == null);
-                    // delete button enabled if selected other stays disabled
-                    deleteBtn.setDisable(newValue == null);
-                    // Clearitem button enabled if selected other stays disabled
-                    ClearItem.setDisable(newValue == null);
-                    boolean isSelected = newValue != null;
-                    editItem.setDisable(!isSelected);
-                    deleteItem.setDisable(!isSelected);
-                    CopyItem.setDisable(!isSelected);
-
-                }
-            });
-
-            // Form must be filled
-            first_name.textProperty().addListener((observable, oldValue, newValue) -> validateClearItem());
-            last_name.textProperty().addListener((observable, oldValue, newValue) -> validateClearItem());
-            department.textProperty().addListener((observable, oldValue, newValue) -> validateClearItem());
-            majorComboBox.valueProperty().addListener((observable, oldValue, newValue) -> validateClearItem());
-            email.textProperty().addListener((observable, oldValue, newValue) -> validateClearItem());
-            imageURL.textProperty().addListener((observable, oldValue, newValue) -> validateClearItem());
-
-            // Addbtn is disabled
-            addBtn.setDisable(true);
-
-            // Major enum values
+            // Initialize the ComboBox with enum values
             majorComboBox.setItems(FXCollections.observableArrayList(Major.values()));
+            majorComboBox.getSelectionModel().selectFirst(); // Default selection
 
-            // ComboBox default selection
-            majorComboBox.getSelectionModel().selectFirst();
-
-            // Text fields listners
-            first_name.textProperty().addListener((observable, oldValue, newValue) -> validateForm());
-            last_name.textProperty().addListener((observable, oldValue, newValue) -> validateForm());
-            department.textProperty().addListener((observable, oldValue, newValue) -> validateForm());
-            majorComboBox.valueProperty().addListener((observable, oldValue, newValue) -> validateForm());
-            email.textProperty().addListener((observable, oldValue, newValue) -> validateForm());
-            imageURL.textProperty().addListener((observable, oldValue, newValue) -> validateForm());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    private boolean isValidName(String name) {
+        String nameRegex = "^[A-Za-z\\s]+$"; // Only letters and spaces
+        return name.matches(nameRegex);
+    }
+    private boolean isValidDepartment(String department) {
+        String departmentRegex = "^[A-Za-z\\s-]+$"; // Letters, spaces, and hyphens
+        return department.matches(departmentRegex);
+    }
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$"; // Standard email pattern
+        return email.matches(emailRegex);
+    }
+    private boolean isValidImageURL(String url) {
+        String imageURLRegex = "^(http|https)://.*\\.(jpg|jpeg|png|gif|bmp|webp)$"; // URL with image extension
+        return url.matches(imageURLRegex);
+    }
+
+
+    // Refresh TableView data
+    private void refreshTableView() {
+        data.clear(); // Clear existing data
+        data.addAll(cnUtil.getData()); // Add fresh data from the database
+        tv.setItems(data); // Set the refreshed data to the TableView
+    }
+
+    // Setup keyboard shortcuts for menu items
+    private void setupKeyboardShortcuts() {
+        Platform.runLater(() -> {
+            if (menuBar.getScene() != null) {
+                menuBar.getScene().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+                    if (event.isControlDown()) {
+                        if (event.getCode() == KeyCode.E) editRecord();
+                        if (event.getCode() == KeyCode.D) deleteRecord();
+                        if (event.getCode() == KeyCode.R) clearForm();
+                        if (event.getCode() == KeyCode.C) copyRecord();
+                    }
+                });
+            }
+        });
+    }
+
+    // Setup actions for menu items
+    private void setupMenuItemActions() {
+        editItem.setOnAction(event -> editRecord());
+        deleteItem.setOnAction(event -> deleteRecord());
+        CopyItem.setOnAction(event -> copyRecord());
+
+        // Disable buttons and menu items initially
+        editBtn.setDisable(true);
+        deleteBtn.setDisable(true);
+        editItem.setDisable(true);
+        deleteItem.setDisable(true);
+        ClearItem.setDisable(true);
+        CopyItem.setDisable(true);
+
+        // Add listener for TableView selection
+        tv.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            boolean isSelected = newValue != null;
+            editBtn.setDisable(!isSelected);
+            deleteBtn.setDisable(!isSelected);
+            editItem.setDisable(!isSelected);
+            deleteItem.setDisable(!isSelected);
+            CopyItem.setDisable(!isSelected);
+        });
+    }
+
+    // Add listeners for form validation
+    private void addFormValidationListeners() {
+        first_name.textProperty().addListener((observable, oldValue, newValue) -> validateForm());
+        last_name.textProperty().addListener((observable, oldValue, newValue) -> validateForm());
+        department.textProperty().addListener((observable, oldValue, newValue) -> validateForm());
+        majorComboBox.valueProperty().addListener((observable, oldValue, newValue) -> validateForm());
+        email.textProperty().addListener((observable, oldValue, newValue) -> validateForm());
+        imageURL.textProperty().addListener((observable, oldValue, newValue) -> validateForm());
+    }
+
+    // Validate form for enabling/disabling the Add button
+    private void validateForm() {
+        boolean isFormValid = !first_name.getText().isEmpty() &&
+                !last_name.getText().isEmpty() &&
+                !department.getText().isEmpty() &&
+                majorComboBox.getValue() != null &&
+                !email.getText().isEmpty() &&
+                isValidEmail(email.getText()) &&
+                !imageURL.getText().isEmpty();
+
+        addBtn.setDisable(!isFormValid);
     }
 
     @FXML
@@ -266,22 +265,43 @@ public class DB_GUI_Controller implements Initializable {
         if (file != null) {
             try (BufferedReader reader = Files.newBufferedReader(file.toPath())) {
                 String line;
-                int lineNumber = 0;
 
+                // Skip the header row (if present)
                 reader.readLine();
 
                 while ((line = reader.readLine()) != null) {
-                    String[] data = line.split(",");
-                    if (data.length == 7) {
+                    String[] data = line.split(","); // Adjust based on your CSV delimiter
 
-                        Person person = new Person(Integer.parseInt(data[0]), data[1], data[2], data[3], data[4], data[5], data[6]);
-                        cnUtil.insertUser(person);
+                    // Ensure the CSV line matches the expected schema
+                    if (data.length == 7) { // Assuming your CSV includes ID, firstName, lastName, department, major, email, imageURL
+                        // Create a new Person object
+                        Person person = new Person(
+                                Integer.parseInt(data[0]), // ID
+                                data[1],                   // First Name
+                                data[2],                   // Last Name
+                                data[3],                   // Department
+                                data[4],                   // Major
+                                data[5],                   // Email
+                                data[6]                    // Image URL
+                        );
+
+                        // Insert the user into the database
+                        cnUtil.insertUser(
+                                Integer.parseInt(data[0]),  // ID
+                                data[1],                   // First Name
+                                data[2],                   // Last Name
+                                data[3],                   // Department
+                                data[4],                   // Major
+                                data[5],                   // Email
+                                data[6]                    // Image URL
+                        );
+
+                        // Add the user to the TableView's observable list
                         this.data.add(person);
                     } else {
-                        statusLabel.setText("Invalid CSV format.");
+                        statusLabel.setText("Invalid CSV format. Ensure all fields are present.");
                         break;
                     }
-                    lineNumber++;
                 }
                 statusLabel.setText("Data imported successfully.");
             } catch (Exception e) {
@@ -290,25 +310,27 @@ public class DB_GUI_Controller implements Initializable {
             }
         }
     }
-    public void insertUser(Person person) {
-        try {
-            Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
-            String sql = "INSERT INTO users (first_name, last_name, department, major, email, imageURL, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+    public void insertUser(int id, String firstName, String lastName, String department, String major, String email, String imageURL) {
+        connectToDatabase();
+        try (Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD)) {
+            String sql = "INSERT INTO users (id, first_name, last_name, department, major, email, imageURL) VALUES (?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
-            preparedStatement.setString(1, person.getFirstName());
-            preparedStatement.setString(2, person.getLastName());
-            preparedStatement.setString(3, person.getDepartment());
-            preparedStatement.setString(4, person.getMajor());
-            preparedStatement.setString(5, person.getEmail());
-            preparedStatement.setString(6, person.getImageURL());
-            preparedStatement.setString(7, "default_password");
+            preparedStatement.setInt(1, id); // Include ID
+            preparedStatement.setString(2, firstName);
+            preparedStatement.setString(3, lastName);
+            preparedStatement.setString(4, department);
+            preparedStatement.setString(5, major);
+            preparedStatement.setString(6, email);
+            preparedStatement.setString(7, imageURL);
             preparedStatement.executeUpdate();
-            preparedStatement.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+
+
 
 
     //CSV file export method
@@ -356,85 +378,32 @@ public class DB_GUI_Controller implements Initializable {
     }
 
 
-    private void validateForm() {
-        //First Name
-        boolean isFirstNameValid = isValidName(first_name.getText());
-
-        //Last Name
-        boolean isLastNameValid = isValidName(last_name.getText());
-
-        //Department
-        boolean isDepartmentValid = isValidDepartment(department.getText());
-
-        //Major
-        boolean isMajorValid = majorComboBox.getValue() != null; // Ensure a major is selected
-
-        //Email
-        boolean isEmailValid = isValidEmail(email.getText());
-
-        //Image URL
-        boolean isImageURLValid = isValidImageURL(imageURL.getText());
-        addBtn.setDisable(!(isFirstNameValid && isLastNameValid && isDepartmentValid &&
-                isMajorValid && isEmailValid && isImageURLValid));
-    }
-    // Regex pattern incorporated
-    private boolean isValidName(String name) {
-        String nameRegex = "^[A-Za-z\\s]+$"; // letters & spaces
-        Pattern pattern = Pattern.compile(nameRegex);
-        Matcher matcher = pattern.matcher(name);
-        return matcher.matches();
-    }
-
-    //department
-    private boolean isValidDepartment(String field) {
-        String departmentRegex = "^[A-Za-z\\s-]+$"; // Only letters, spaces, and hyphens
-        Pattern pattern = Pattern.compile(departmentRegex);
-        Matcher matcher = pattern.matcher(field);
-        return matcher.matches();
-    }
-
-    //email
-    private boolean isValidEmail(String email) {
-        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$"; // email validation
-        Pattern pattern = Pattern.compile(emailRegex);
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
-    }
-
-    //image URL
-    private boolean isValidImageURL(String url) {
-        String imageURLRegex = "^(http|https)://.*\\.(jpg|jpeg|png|gif|bmp|webp)$"; // URL with image extension
-        Pattern pattern = Pattern.compile(imageURLRegex);
-        Matcher matcher = pattern.matcher(url);
-        return matcher.matches();
-    }
-
-
-
     @FXML
     protected void addNewRecord() {
-        // Validate that all required fields are filled
-        if (first_name.getText().isEmpty() || last_name.getText().isEmpty() || department.getText().isEmpty() ||
-                email.getText().isEmpty() || majorComboBox.getValue() == null) {
-            statusLabel.setText("Please fill out all required fields.");
-            return;
+        try {
+            // Insert user into the database
+            cnUtil.insertUser(
+                    0,  // Auto-generated ID
+                    first_name.getText(),
+                    last_name.getText(),
+                    department.getText(),
+                    majorComboBox.getValue().toString(),
+                    email.getText(),
+                    imageURL.getText()
+            );
+
+            // Refresh the TableView with the updated data
+            refreshTableView();
+
+            // Clear the form
+            clearForm();
+
+            // Show success message
+            statusLabel.setText("Record added successfully.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            statusLabel.setText("Error adding record.");
         }
-
-        // Create a new Person object with form inputs
-        Person p = new Person(
-                first_name.getText(),
-                last_name.getText(),
-                department.getText(),
-                majorComboBox.getValue().toString(),
-                email.getText(),
-                imageURL.getText()
-        );
-
-        // Insert the user into the database
-        cnUtil.insertUser(p); // Use cnUtil.insertUser(p) or insertUser(p), but not both
-        data.add(p);          // Add to observable list for TableView
-        clearForm();          // Clear the form after successful addition
-        statusLabel.setText("Record added successfully.");
     }
 
 
@@ -527,28 +496,62 @@ public class DB_GUI_Controller implements Initializable {
 
     @FXML
     protected void editRecord() {
-        Person p = tv.getSelectionModel().getSelectedItem();
-        int index = data.indexOf(p);
-        Person p2 = new Person(index + 1, first_name.getText(), last_name.getText(), department.getText(),
-                majorComboBox.getValue().toString(), email.getText(), imageURL.getText());
-        cnUtil.editUser(p.getId(), p2);
-        refreshTableView();
-        data.remove(p);
-        data.add(index, p2);
-        tv.getSelectionModel().select(index);
+        // Get the selected person from the TableView
+        Person selectedPerson = tv.getSelectionModel().getSelectedItem();
 
-        // Update status label with success or failure message
+        if (selectedPerson == null) {
+            statusLabel.setText("No record selected to edit.");
+            return;
+        }
+
         try {
+            // Validate inputs from the form
+            String updatedFirstName = first_name.getText().trim();
+            String updatedLastName = last_name.getText().trim();
+            String updatedDepartment = department.getText().trim();
+            String updatedMajor = majorComboBox.getValue() != null ? majorComboBox.getValue().toString() : null;
+            String updatedEmail = email.getText().trim();
+            String updatedImageURL = imageURL.getText().trim();
+
+            // Ensure all required fields are filled
+            if (updatedFirstName.isEmpty() || updatedLastName.isEmpty() || updatedDepartment.isEmpty()
+                    || updatedMajor == null || updatedEmail.isEmpty()) {
+                statusLabel.setText("All fields are required.");
+                return;
+            }
+
+            // Fetch the account_id using the email
+            int accountId = cnUtil.getAccountId(updatedEmail);
+
+            if (accountId == -1) {
+                statusLabel.setText("Account not found for the provided email.");
+                return;
+            }
+
+            // Call the database method to update the user
+            cnUtil.editUser(selectedPerson.getId(), accountId, updatedFirstName, updatedLastName,
+                    updatedDepartment, updatedMajor, updatedEmail, updatedImageURL);
+
+            // Update the ObservableList to reflect changes
+            int selectedIndex = data.indexOf(selectedPerson);
+            Person updatedPerson = new Person(
+                    selectedPerson.getId(), // Keep the same ID
+                    updatedFirstName,
+                    updatedLastName,
+                    updatedDepartment,
+                    updatedMajor,
+                    updatedEmail,
+                    updatedImageURL
+            );
+            data.set(selectedIndex, updatedPerson);
+            tv.getSelectionModel().select(updatedPerson);
+
+            // Display success message
             statusLabel.setText("Record updated successfully.");
         } catch (Exception e) {
-            statusLabel.setText("Record was not updated successfully.");
+            e.printStackTrace();
+            statusLabel.setText("Error updating record.");
         }
-        if (statusLabel != null) {
-            statusLabel.setText("Record added successfully.");
-        } else {
-            System.out.println("statusLabel is null. Check FXML linkage.");
-        }
-
     }
 
     @FXML
@@ -561,14 +564,14 @@ public class DB_GUI_Controller implements Initializable {
         tv.getSelectionModel().select(index);
     }
 
-    @FXML
     private void copyRecord() {
-        // Gets selected record from the table
+        // Get the selected record from the TableView
         Person selectedPerson = tv.getSelectionModel().getSelectedItem();
+
         if (selectedPerson != null) {
-            // Creates a duplicate of the selected record
+            // Create a duplicate of the selected record
             Person copiedPerson = new Person(
-                    data.size() + 1, // Assigns a new ID
+                    data.size() + 1, // Assign a new ID
                     selectedPerson.getFirstName(),
                     selectedPerson.getLastName(),
                     selectedPerson.getDepartment(),
@@ -577,19 +580,27 @@ public class DB_GUI_Controller implements Initializable {
                     selectedPerson.getImageURL()
             );
 
-            // Adds duplicated record to TableView and database
+            // Add duplicated record to TableView
             data.add(copiedPerson);
-            cnUtil.insertUser(copiedPerson); // inserts into the database
 
-            // Updates status label to show a success message
+            // Insert into the database
+            cnUtil.insertUser(
+                    copiedPerson.getId(),
+                    copiedPerson.getFirstName(),
+                    copiedPerson.getLastName(),
+                    copiedPerson.getDepartment(),
+                    copiedPerson.getMajor(),
+                    copiedPerson.getEmail(),
+                    copiedPerson.getImageURL()
+            );
+
+            // Update status label to show a success message
             statusLabel.setText("Record copied successfully.");
         } else {
-            // Shows an error message if no record is selected
+            // Show an error message if no record is selected
             statusLabel.setText("No record selected to copy.");
         }
     }
-
-
 
 
     //new code for progress bar, uploading profile pic
@@ -731,10 +742,7 @@ public class DB_GUI_Controller implements Initializable {
         });
     }
     private static enum Major {CS, Medical, CPIS, IT, Cyber, Other}
-    private void refreshTableView() {
-        data.clear(); // Clear current data
-        data.addAll(cnUtil.getData()); // Add fresh data from the database
-    }
+
 
 
     private static class Results {
@@ -749,4 +757,5 @@ public class DB_GUI_Controller implements Initializable {
             this.major = venue;
         }
     }
+
 }

@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/22" stylesheets="@../css/lightTheme.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="viewmodel.SignupController">
+<AnchorPane stylesheets="@../css/lightTheme.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="viewmodel.SignupController">
    <children>
          <Label layoutX="85.0" layoutY="325.0" text="Password:" />
          <Label layoutX="52.0" layoutY="384.0" prefHeight="17.0" prefWidth="119.0" text="Confirm Password:">
@@ -49,18 +49,18 @@
    
                                                                                                                                                                     <!-- Password Field -->
            <VBox spacing="5" />
-         <TextField fx:id="usernameField" prefHeight="40" promptText="Username" styleClass="text_field" />
-            <PasswordField fx:id="passwordField" prefHeight="40" promptText="strong password" styleClass="text_field" />
-            <PasswordField fx:id="confirmPasswordField" prefHeight="40" promptText="strong password" styleClass="text_field" />
+         <TextField fx:id="usernameField" prefHeight="40" promptText="5-20 characters" styleClass="text_field" />
+            <PasswordField fx:id="passwordField" prefHeight="40" promptText="1 upper, 1 lower, 1 digit, 8-20 characters" styleClass="text_field" />
+            <PasswordField fx:id="confirmPasswordField" prefHeight="40" promptText="password must match" styleClass="text_field" />
             <TextField fx:id="emailField" prefHeight="40" promptText="example@domain.com" styleClass="text_field" />
            <Label fx:id="statusLabel" text="" textFill="red" />
          <VBox layoutX="50.0" layoutY="174.0" spacing="5" />
-           <Button fx:id="submitBtn" style="-fx-background-color: Green; -fx-border-color: BLACK;" onAction="#createNewAccount" prefHeight="33.0" prefWidth="141.0" styleClass="submit_button" text="Submit">
+           <Button fx:id="submitBtn" onAction="#createNewAccount" prefHeight="33.0" prefWidth="141.0" style="-fx-background-color: Green; -fx-border-color: BLACK;" styleClass="submit_button" text="Submit">
                <font>
                    <Font name="Book Antiqua" size="15.0" />
                </font>
            </Button>
-         <Button fx:id="goBackBtn" style="-fx-background-color: Red; -fx-border-color: BLACK;" onAction="#goBack" prefHeight="33.0" prefWidth="139.0" styleClass="submit_button" text="Back">
+         <Button fx:id="goBackBtn" onAction="#goBack" prefHeight="33.0" prefWidth="139.0" style="-fx-background-color: Red; -fx-border-color: BLACK;" styleClass="submit_button" text="Back">
             <font>
                <Font name="Book Antiqua" size="15.0" />
             </font>

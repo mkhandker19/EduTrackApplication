@@ -16,8 +16,8 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import service.UserSession;
 
+import java.sql.*;
 import java.util.Objects;
-import java.util.prefs.Preferences;
 
 public class LoginController {
     @FXML
@@ -37,6 +37,9 @@ public class LoginController {
     @FXML
     private TextField usernameField;
 
+    private static final String DB_URL = "jdbc:mysql://csc311khandkerserver.mysql.database.azure.com/csc311_bd_temp";
+    private static final String DB_USERNAME = "csc311admin";
+    private static final String DB_PASSWORD = "farmingdale24@.";
 
     public void initialize() {
         rootPane.setBackground(new Background(
@@ -68,27 +71,38 @@ public class LoginController {
         String username = usernameField.getText().trim();
         String password = passwordField.getText().trim();
 
-        // Access stored credentials from Preferences
-        Preferences userPreferences = Preferences.userRoot().node(SignupController.class.getName());
-        String storedUsername = userPreferences.get("USERNAME", null);
-        String storedPassword = userPreferences.get("PASSWORD", null);
-
-        if (storedUsername == null || storedPassword == null) {
-            showErrorAlert("No account found. Please sign up first.");
+        if (username.isEmpty() || password.isEmpty()) {
+            showErrorAlert("Username and password cannot be empty.");
             return;
         }
 
-        // Validate credentials
-        if (username.equals(storedUsername) && password.equals(storedPassword)) {
-            // Login successful, set user session
-            UserSession.getInstance(storedUsername, storedPassword);
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+            String sql = "SELECT account_id, username, password FROM accounts WHERE username = ? AND password = ?";
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
 
-            // Redirect to the main page
-            navigateToMainPage(actionEvent);
-        } else {
-            showErrorAlert("Invalid username or password. Please try again.");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                // Retrieve the userId, username, and password
+                int userId = resultSet.getInt("account_id");
+                String storedUsername = resultSet.getString("username");
+                String storedPassword = resultSet.getString("password");
+
+                // Login successful, initialize UserSession
+                UserSession.getInstance(userId, storedUsername, storedPassword);
+
+                // Navigate to main application page
+                navigateToMainPage(actionEvent);
+            } else {
+                showErrorAlert("Invalid username or password. Please try again.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showErrorAlert("Database error occurred. Please try again later.");
         }
     }
+
 
     private void navigateToMainPage(ActionEvent actionEvent) {
         try {

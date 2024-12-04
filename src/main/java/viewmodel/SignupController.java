@@ -132,33 +132,30 @@ public class SignupController {
 
 
     public void createNewAccount(ActionEvent actionEvent) {
-        // Retrieve input from fields
         String username = usernameField.getText();
         String password = passwordField.getText();
         String email = emailField.getText();
 
-
         try {
-            Preferences userPreferences = Preferences.userRoot().node(this.getClass().getName());
-            userPreferences.put("USERNAME", username);
-            userPreferences.put("PASSWORD", password);
-            userPreferences.put("EMAIL", email);
-            UserSession.getInstance(username, password);
+            if (!db.isUsernameExists(username)) {
+                db.insertAccount(username, password, email);
 
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Account Created");
+                alert.setContentText("Your account has been successfully created.");
+                alert.showAndWait();
 
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Account Created");
-            alert.setContentText("Your account has been successfully created and stored.");
-            alert.showAndWait();
-
-
-            goBack(actionEvent);
-
+                goBack(actionEvent);
+            } else {
+                signupValidationMessage.setText("Username already exists.");
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            signupValidationMessage.setText("Error storing account information. Please try again.");
+            signupValidationMessage.setText("Error creating account.");
         }
     }
+
+
     @FXML
     private void goBack(ActionEvent actionEvent) {
         try {
