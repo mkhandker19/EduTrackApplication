@@ -1,72 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane stylesheets="@../css/lightTheme.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="viewmodel.SignupController">
+<GridPane fx:id="rootPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="viewmodel.SignupController">
+    <Label fx:id="statusLabel" layoutX="20" layoutY="300" text="" />
+    <columnConstraints>
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="1304.0" minWidth="10.0" prefWidth="363.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="1304.0" minWidth="10.0" prefWidth="126.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="963.0" minWidth="10.0" prefWidth="257.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="963.0" minWidth="10.0" prefWidth="386.0" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints maxHeight="175.0" minHeight="10.0" prefHeight="95.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="226.0" minHeight="0.0" prefHeight="226.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="215.0" minHeight="10.0" prefHeight="83.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="273.0" minHeight="10.0" prefHeight="72.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="321.0" minHeight="10.0" prefHeight="73.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="416.0" minHeight="7.0" prefHeight="51.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="428.0" minHeight="10.0" prefHeight="86.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="599.0" minHeight="10.0" prefHeight="70.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="599.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+   </rowConstraints>
    <children>
-         <Label layoutX="85.0" layoutY="325.0" text="Password:" />
-         <Label layoutX="52.0" layoutY="384.0" prefHeight="17.0" prefWidth="119.0" text="Confirm Password:">
-             <font>
-                 <Font name="Book Antiqua" size="12.0" />
-             </font>
-         </Label>
-      <Label layoutX="94.0" layoutY="434.0" text="Email:">
+      <HBox prefHeight="384.0" prefWidth="1309.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+   
+                                                                                                                                                                                                              <!-- Header Label -->
+        <Label alignment="CENTER_RIGHT" prefHeight="32.0" prefWidth="218.0" text="EduTrack Signup" GridPane.columnIndex="2" GridPane.columnSpan="2">
+            <font>
+                <Font name="Book Antiqua" size="25.0" />
+            </font>
+        </Label>
+      <TextField fx:id="usernameField" alignment="CENTER" prefHeight="40" promptText="5-20 characters" styleClass="text_field" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+         <PasswordField fx:id="passwordField" alignment="CENTER" prefHeight="40" promptText="1 upper, 1 lower, 1 digit, 8-20 characters" styleClass="text_field" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+         <PasswordField fx:id="confirmPasswordField" alignment="CENTER" prefHeight="40" promptText="password must match" styleClass="text_field" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+         <TextField fx:id="emailField" alignment="CENTER" prefHeight="40" promptText="example@domain.com" styleClass="text_field" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+        <Button fx:id="submitBtn" alignment="CENTER" mnemonicParsing="false" onAction="#createNewAccount" prefHeight="44.0" prefWidth="249.0" style="-fx-background-color: Green; -fx-border-color: BLACK;" styleClass="submit_button" text="Submit" GridPane.columnIndex="2" GridPane.rowIndex="7">
+            <font>
+                <Font name="Book Antiqua" size="15.0" />
+            </font>
+        </Button>
+      <Button fx:id="goBackBtn" alignment="CENTER" onAction="#goBack" prefHeight="51.0" prefWidth="249.0" style="-fx-background-color: RED; -fx-border-color: BLACK;" styleClass="login_button" text="Back" GridPane.columnIndex="2" GridPane.rowIndex="6">
+         <font>
+            <Font name="Book Antiqua" size="15.0" />
+         </font>
+      </Button>
+      <Label alignment="CENTER" prefHeight="17.0" prefWidth="81.0" text="Email:" GridPane.columnIndex="1" GridPane.rowIndex="5">
          <font>
             <Font name="Book Antiqua" size="12.0" />
          </font>
       </Label>
-         <Label layoutX="84.0" layoutY="275.0" text="Username:" />
-   
-                                                                                                                                                                <VBox alignment="CENTER" layoutX="138.0" prefHeight="600.0" prefWidth="301.0" spacing="15">
-           <padding>
-               <Insets bottom="40" left="40" right="40" top="40" />
-           </padding>
-      
-                                                                                                                                                                                            <!-- Header Label -->
-           <Label prefHeight="28.0" prefWidth="196.0" text="EduTrack Signup">
-               <font>
-                   <Font name="Book Antiqua" size="25.0" />
-               </font>
-           </Label>
-          <ImageView fitHeight="151.0" fitWidth="133.0" pickOnBounds="true" preserveRatio="true">
-              <image>
-                  <Image url="@../images/School-Download-PNG.png" />
-              </image>
-          </ImageView>
-   
-                                                                                                                                                                          <!-- Username Field -->
-           <VBox spacing="5" />
-   
-                                                                                                                                                                    <!-- Password Field -->
-           <VBox spacing="5" />
-         <TextField fx:id="usernameField" prefHeight="40" promptText="5-20 characters" styleClass="text_field" />
-            <PasswordField fx:id="passwordField" prefHeight="40" promptText="1 upper, 1 lower, 1 digit, 8-20 characters" styleClass="text_field" />
-            <PasswordField fx:id="confirmPasswordField" prefHeight="40" promptText="password must match" styleClass="text_field" />
-            <TextField fx:id="emailField" prefHeight="40" promptText="example@domain.com" styleClass="text_field" />
-           <Label fx:id="statusLabel" text="" textFill="red" />
-         <VBox layoutX="50.0" layoutY="174.0" spacing="5" />
-           <Button fx:id="submitBtn" onAction="#createNewAccount" prefHeight="33.0" prefWidth="141.0" style="-fx-background-color: Green; -fx-border-color: BLACK;" styleClass="submit_button" text="Submit">
-               <font>
-                   <Font name="Book Antiqua" size="15.0" />
-               </font>
-           </Button>
-         <Button fx:id="goBackBtn" onAction="#goBack" prefHeight="33.0" prefWidth="139.0" style="-fx-background-color: Red; -fx-border-color: BLACK;" styleClass="submit_button" text="Back">
-            <font>
-               <Font name="Book Antiqua" size="15.0" />
-            </font>
-         </Button>
-           <!-- Buttons Section -->
-           <HBox alignment="CENTER" spacing="15" />
-       </VBox>
+         <Label alignment="CENTER" text="Username:" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+         <Label alignment="CENTER" prefHeight="17.0" prefWidth="119.0" text="Password:" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+         <Label alignment="CENTER" text="Password:" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+       <ImageView fitHeight="225.0" fitWidth="411.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="1">
+           <image>
+               <Image url="@../images/School-Download-PNG.png" />
+           </image>
+       </ImageView>
    </children>
-</AnchorPane>
+</GridPane>
