@@ -1,4 +1,4 @@
-EduTrack Application
+## EduTrack Application
 
 EduTrack is a JavaFX-based desktop application designed to manage user records with a focus on education-related information. It uses MySQL for backend data storage and supports features like adding, editing, deleting, and displaying records. The application also integrates Azure Blob Storage for managing profile images.
 
