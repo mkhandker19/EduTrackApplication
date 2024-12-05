@@ -13,16 +13,6 @@ public class Person {
     public Person() {
     }
 
-    public Person(String firstName, String lastName, String department, String major, String email,  String imageURL) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.department = department;
-        this.major = major;
-        this.email = email;
-        this.imageURL = imageURL;
-
-    }
-
     public Person(Integer id, String firstName, String lastName, String department, String major, String email,  String imageURL) {
         this.id = id;
         this.firstName = firstName;

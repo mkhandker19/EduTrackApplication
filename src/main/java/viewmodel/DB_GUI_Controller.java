@@ -48,10 +48,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DB_GUI_Controller implements Initializable {
-    final static String DB_NAME="csc311_bd_temp";
-    MyLogger lg= new MyLogger();
+    final static String DB_NAME = "csc311_bd_temp";
+    MyLogger lg = new MyLogger();
     final static String SQL_SERVER_URL = "jdbc:mysql://csc311khandkerserver.mysql.database.azure.com";//update this server name
-    final static String DB_URL = "jdbc:mysql://csc311khandkerserver.mysql.database.azure.com/"+DB_NAME;//update this database name
+    final static String DB_URL = "jdbc:mysql://csc311khandkerserver.mysql.database.azure.com/" + DB_NAME;//update this database name
     final static String USERNAME = "csc311admin";// update this username
     final static String PASSWORD = "farmingdale24@.";// update this password
     //added edit btn
@@ -103,6 +103,7 @@ public class DB_GUI_Controller implements Initializable {
     private TableColumn<Person, String> tv_fn, tv_ln, tv_department, tv_major, tv_email;
     private final DbConnectivityClass cnUtil = new DbConnectivityClass();
     private final ObservableList<Person> data = cnUtil.getData();
+
     public boolean connectToDatabase() {
         boolean isConnected = false;
         try {
@@ -140,7 +141,7 @@ public class DB_GUI_Controller implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
             // Set up TableView columns
-            tv_id.setCellValueFactory(new PropertyValueFactory<>("id"));
+            tv_id.setCellValueFactory(new PropertyValueFactory<>("id")); // Ensure this matches the `id` field in the Person class
             tv_fn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
             tv_ln.setCellValueFactory(new PropertyValueFactory<>("lastName"));
             tv_department.setCellValueFactory(new PropertyValueFactory<>("department"));
@@ -162,23 +163,28 @@ public class DB_GUI_Controller implements Initializable {
             // Initialize the ComboBox with enum values
             majorComboBox.setItems(FXCollections.observableArrayList(Major.values()));
             majorComboBox.getSelectionModel().selectFirst(); // Default selection
-
+            tv.setItems(data);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
+
     private boolean isValidName(String name) {
         String nameRegex = "^[A-Za-z\\s]+$"; // Only letters and spaces
         return name.matches(nameRegex);
     }
+
     private boolean isValidDepartment(String department) {
         String departmentRegex = "^[A-Za-z\\s-]+$"; // Letters, spaces, and hyphens
         return department.matches(departmentRegex);
     }
+
     private boolean isValidEmail(String email) {
         String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$"; // Standard email pattern
         return email.matches(emailRegex);
     }
+
     private boolean isValidImageURL(String url) {
         String imageURLRegex = "^(http|https)://.*\\.(jpg|jpeg|png|gif|bmp|webp)$"; // URL with image extension
         return url.matches(imageURLRegex);
@@ -187,8 +193,9 @@ public class DB_GUI_Controller implements Initializable {
 
     // Refresh TableView data
     private void refreshTableView() {
-        data.clear(); // Clear existing data
-        data.addAll(cnUtil.getData()); // Add fresh data from the database
+        ObservableList<Person> newData = cnUtil.getData();
+        data.clear();
+        data.addAll(newData);
         tv.setItems(data); // Set the refreshed data to the TableView
     }
 
@@ -287,7 +294,6 @@ public class DB_GUI_Controller implements Initializable {
 
                         // Insert the user into the database
                         cnUtil.insertUser(
-                                Integer.parseInt(data[0]),  // ID
                                 data[1],                   // First Name
                                 data[2],                   // Last Name
                                 data[3],                   // Department
@@ -311,26 +317,30 @@ public class DB_GUI_Controller implements Initializable {
         }
     }
 
-    public void insertUser(int id, String firstName, String lastName, String department, String major, String email, String imageURL) {
+    public int insertUser(String firstName, String lastName, String department, String major, String email, String imageURL) {
         connectToDatabase();
+        int generatedId = -1;
         try (Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD)) {
-            String sql = "INSERT INTO users (id, first_name, last_name, department, major, email, imageURL) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
-            preparedStatement.setInt(1, id); // Include ID
-            preparedStatement.setString(2, firstName);
-            preparedStatement.setString(3, lastName);
-            preparedStatement.setString(4, department);
-            preparedStatement.setString(5, major);
-            preparedStatement.setString(6, email);
-            preparedStatement.setString(7, imageURL);
+            String sql = "INSERT INTO users (first_name, last_name, department, major, email, imageURL) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, firstName);
+            preparedStatement.setString(2, lastName);
+            preparedStatement.setString(3, department);
+            preparedStatement.setString(4, major);
+            preparedStatement.setString(5, email);
+            preparedStatement.setString(6, imageURL);
             preparedStatement.executeUpdate();
+
+            // Retrieve the generated ID
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()) {
+                generatedId = rs.getInt(1);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return generatedId;
     }
-
-
-
 
 
     //CSV file export method
@@ -380,10 +390,16 @@ public class DB_GUI_Controller implements Initializable {
 
     @FXML
     protected void addNewRecord() {
+        if (first_name.getText().isEmpty() || last_name.getText().isEmpty() || department.getText().isEmpty() ||
+                email.getText().isEmpty() || majorComboBox.getValue() == null || imageURL.getText().isEmpty()) {
+            statusLabel.setText("Please fill out all fields.");
+            return;
+        }
+
+        int generatedId = 0;
         try {
-            // Insert user into the database
-            cnUtil.insertUser(
-                    0,  // Auto-generated ID
+            // Insert the new user into the database and retrieve the generated ID
+            generatedId = cnUtil.insertUser(
                     first_name.getText(),
                     last_name.getText(),
                     department.getText(),
@@ -392,18 +408,36 @@ public class DB_GUI_Controller implements Initializable {
                     imageURL.getText()
             );
 
-            // Refresh the TableView with the updated data
-            refreshTableView();
+            // Add the new user to the TableView
+            data.add(new Person(
+                    generatedId, // Auto-generated ID
+                    first_name.getText(),
+                    last_name.getText(),
+                    department.getText(),
+                    majorComboBox.getValue().toString(),
+                    email.getText(),
+                    imageURL.getText()
+            ));
 
-            // Clear the form
+            // Clear the form after successful submission
             clearForm();
-
-            // Show success message
             statusLabel.setText("Record added successfully.");
         } catch (Exception e) {
             e.printStackTrace();
             statusLabel.setText("Error adding record.");
         }
+        addRecordToTableView(new Person(
+                generatedId, // Ensure this ID is correct
+                first_name.getText().trim(),
+                last_name.getText().trim(),
+                department.getText().trim(),
+                majorComboBox.getValue() != null ? majorComboBox.getValue().toString() : "Unknown",
+                email.getText().trim(),
+                imageURL.getText().trim()
+        ));
+
+        refreshTableView();
+
     }
 
 
@@ -431,15 +465,6 @@ public class DB_GUI_Controller implements Initializable {
 
     @FXML
     protected void clearForm() {
-        first_name.setText("");
-        last_name.setText("");
-        department.setText("");
-        majorComboBox.setValue(null); // Clear the ComboBox selection
-        //major.setText("");
-        email.setText("");
-        imageURL.setText("");
-        addBtn.setDisable(true); // Disable add button after form clears
-
         //logic added to clear the form if u click clear from the menu item
         first_name.clear();
         last_name.clear();
@@ -481,6 +506,7 @@ public class DB_GUI_Controller implements Initializable {
             e.printStackTrace();
         }
     }
+
     @FXML
     protected void displayHelp() {
         try {
@@ -496,16 +522,13 @@ public class DB_GUI_Controller implements Initializable {
 
     @FXML
     protected void editRecord() {
-        // Get the selected person from the TableView
         Person selectedPerson = tv.getSelectionModel().getSelectedItem();
-
         if (selectedPerson == null) {
             statusLabel.setText("No record selected to edit.");
             return;
         }
 
         try {
-            // Validate inputs from the form
             String updatedFirstName = first_name.getText().trim();
             String updatedLastName = last_name.getText().trim();
             String updatedDepartment = department.getText().trim();
@@ -513,40 +536,24 @@ public class DB_GUI_Controller implements Initializable {
             String updatedEmail = email.getText().trim();
             String updatedImageURL = imageURL.getText().trim();
 
-            // Ensure all required fields are filled
             if (updatedFirstName.isEmpty() || updatedLastName.isEmpty() || updatedDepartment.isEmpty()
                     || updatedMajor == null || updatedEmail.isEmpty()) {
                 statusLabel.setText("All fields are required.");
                 return;
             }
 
-            // Fetch the account_id using the email
-            int accountId = cnUtil.getAccountId(updatedEmail);
-
-            if (accountId == -1) {
-                statusLabel.setText("Account not found for the provided email.");
-                return;
-            }
-
             // Call the database method to update the user
-            cnUtil.editUser(selectedPerson.getId(), accountId, updatedFirstName, updatedLastName,
-                    updatedDepartment, updatedMajor, updatedEmail, updatedImageURL);
+            cnUtil.updateUser(updatedFirstName, updatedLastName, updatedDepartment, updatedMajor, updatedEmail, updatedImageURL);
 
             // Update the ObservableList to reflect changes
-            int selectedIndex = data.indexOf(selectedPerson);
-            Person updatedPerson = new Person(
-                    selectedPerson.getId(), // Keep the same ID
-                    updatedFirstName,
-                    updatedLastName,
-                    updatedDepartment,
-                    updatedMajor,
-                    updatedEmail,
-                    updatedImageURL
-            );
-            data.set(selectedIndex, updatedPerson);
-            tv.getSelectionModel().select(updatedPerson);
+            selectedPerson.setFirstName(updatedFirstName);
+            selectedPerson.setLastName(updatedLastName);
+            selectedPerson.setDepartment(updatedDepartment);
+            selectedPerson.setMajor(updatedMajor);
+            selectedPerson.setEmail(updatedEmail);
+            selectedPerson.setImageURL(updatedImageURL);
 
-            // Display success message
+            tv.refresh();
             statusLabel.setText("Record updated successfully.");
         } catch (Exception e) {
             e.printStackTrace();
@@ -554,24 +561,35 @@ public class DB_GUI_Controller implements Initializable {
         }
     }
 
+
     @FXML
     protected void deleteRecord() {
         Person person = tv.getSelectionModel().getSelectedItem();
-        int index = data.indexOf(person);
-        cnUtil.deleteRecord(person.getId());
-        refreshTableView();
-        data.remove(index);
-        tv.getSelectionModel().select(index);
+        if (person == null) {
+            statusLabel.setText("No record selected to delete.");
+            return;
+        }
+        try {
+            cnUtil.deleteRecord(person.getId()); // Use the auto-generated ID
+            data.remove(person);
+            statusLabel.setText("Record deleted successfully.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            statusLabel.setText("Error deleting record.");
+        }
     }
 
-    private void copyRecord() {
-        // Get the selected record from the TableView
-        Person selectedPerson = tv.getSelectionModel().getSelectedItem();
 
-        if (selectedPerson != null) {
-            // Create a duplicate of the selected record
-            Person copiedPerson = new Person(
-                    data.size() + 1, // Assign a new ID
+    @FXML
+    private void copyRecord() {
+        Person selectedPerson = tv.getSelectionModel().getSelectedItem();
+        if (selectedPerson == null) {
+            statusLabel.setText("No record selected to copy.");
+            return;
+        }
+
+        try {
+            int generatedId = cnUtil.insertUser(
                     selectedPerson.getFirstName(),
                     selectedPerson.getLastName(),
                     selectedPerson.getDepartment(),
@@ -580,25 +598,21 @@ public class DB_GUI_Controller implements Initializable {
                     selectedPerson.getImageURL()
             );
 
-            // Add duplicated record to TableView
-            data.add(copiedPerson);
-
-            // Insert into the database
-            cnUtil.insertUser(
-                    copiedPerson.getId(),
-                    copiedPerson.getFirstName(),
-                    copiedPerson.getLastName(),
-                    copiedPerson.getDepartment(),
-                    copiedPerson.getMajor(),
-                    copiedPerson.getEmail(),
-                    copiedPerson.getImageURL()
+            Person copiedPerson = new Person(
+                    generatedId, // New auto-generated ID
+                    selectedPerson.getFirstName(),
+                    selectedPerson.getLastName(),
+                    selectedPerson.getDepartment(),
+                    selectedPerson.getMajor(),
+                    selectedPerson.getEmail(),
+                    selectedPerson.getImageURL()
             );
 
-            // Update status label to show a success message
+            data.add(copiedPerson);
             statusLabel.setText("Record copied successfully.");
-        } else {
-            // Show an error message if no record is selected
-            statusLabel.setText("No record selected to copy.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            statusLabel.setText("Error copying record.");
         }
     }
 
@@ -665,7 +679,6 @@ public class DB_GUI_Controller implements Initializable {
     }
 
 
-
     @FXML
     protected void addRecord() {
         showSomeone();
@@ -698,6 +711,7 @@ public class DB_GUI_Controller implements Initializable {
             e.printStackTrace();
         }
     }
+
     public void darkTheme(ActionEvent actionEvent) {
         try {
             Scene scene = menuBar.getScene();
@@ -713,6 +727,7 @@ public class DB_GUI_Controller implements Initializable {
             e.printStackTrace();
         }
     }
+
     public void showSomeone() {
         Dialog<Results> dialog = new Dialog<>();
         dialog.setTitle("New User");
@@ -726,7 +741,7 @@ public class DB_GUI_Controller implements Initializable {
                 FXCollections.observableArrayList(Major.values());
         ComboBox<Major> comboBox = new ComboBox<>(options);
         comboBox.getSelectionModel().selectFirst();
-        dialogPane.setContent(new VBox(8, textField1, textField2,textField3, comboBox));
+        dialogPane.setContent(new VBox(8, textField1, textField2, textField3, comboBox));
         Platform.runLater(textField1::requestFocus);
         dialog.setResultConverter((ButtonType button) -> {
             if (button == ButtonType.OK) {
@@ -741,8 +756,8 @@ public class DB_GUI_Controller implements Initializable {
                     results.fname + " " + results.lname + " " + results.major);
         });
     }
-    private static enum Major {CS, Medical, CPIS, IT, Cyber, Other}
 
+    private static enum Major {CS, Medical, CPIS, IT, Cyber, Other}
 
 
     private static class Results {
@@ -756,6 +771,11 @@ public class DB_GUI_Controller implements Initializable {
             this.lname = date;
             this.major = venue;
         }
+    }
+
+    private void addRecordToTableView(Person person) {
+        data.add(person); // Add the new person to the ObservableList
+        tv.refresh(); // Refresh the TableView
     }
 
 }

@@ -18,6 +18,7 @@ import service.UserSession;
 
 import java.sql.*;
 import java.util.Objects;
+import java.util.prefs.Preferences;
 
 public class LoginController {
     @FXML
@@ -71,35 +72,20 @@ public class LoginController {
         String username = usernameField.getText().trim();
         String password = passwordField.getText().trim();
 
-        if (username.isEmpty() || password.isEmpty()) {
-            showErrorAlert("Username and password cannot be empty.");
-            return;
-        }
+        // Access stored credentials from Preferences
+        Preferences userPreferences = Preferences.userRoot().node(SignupController.class.getName());
+        String storedUsername = userPreferences.get("USERNAME", null);
+        String storedPassword = userPreferences.get("PASSWORD", null);
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-            String sql = "SELECT account_id, username, password FROM accounts WHERE username = ? AND password = ?";
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
-            preparedStatement.setString(1, username);
-            preparedStatement.setString(2, password);
+        // Validate credentials
+        if (storedUsername != null && storedPassword != null &&
+                username.equals(storedUsername) && password.equals(storedPassword)) {
 
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                // Retrieve the userId, username, and password
-                int userId = resultSet.getInt("account_id");
-                String storedUsername = resultSet.getString("username");
-                String storedPassword = resultSet.getString("password");
-
-                // Login successful, initialize UserSession
-                UserSession.getInstance(userId, storedUsername, storedPassword);
-
-                // Navigate to main application page
-                navigateToMainPage(actionEvent);
-            } else {
-                showErrorAlert("Invalid username or password. Please try again.");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showErrorAlert("Database error occurred. Please try again later.");
+            // Login successful
+            UserSession.getInstance(username, password); // Initialize session
+            navigateToMainPage(actionEvent);
+        } else {
+            showErrorAlert("Invalid username or password.");
         }
     }
 
@@ -124,7 +110,6 @@ public class LoginController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
     @FXML
     public void signUp(ActionEvent actionEvent) {
         System.out.println("Navigating to sign-up page...");

@@ -10,6 +10,13 @@ public class UserSession {
     private String username;
     private String email;
 
+    public static synchronized UserSession getInstance(String userName, String password) {
+        if (instance == null) {
+            instance = new UserSession(0, userName, password); // Pass 0 as a placeholder ID
+        }
+        return instance;
+    }
+
     // Private constructor for session initialization
     private UserSession(int accountId, String username, String email) {
         this.accountId = accountId;

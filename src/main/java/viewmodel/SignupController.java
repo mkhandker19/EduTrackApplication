@@ -1,6 +1,5 @@
 package viewmodel;
 
-import dao.DbConnectivityClass;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
@@ -10,8 +9,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import model.Person;
-import service.UserSession;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -21,6 +18,7 @@ public class SignupController {
     private final String usernameRegex = "^[a-zA-Z0-9]{5,20}$"; // Alphanumeric, 5-20 chars
     private final String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$"; // At least 1 upper, 1 lower, 1 digit, 8+ chars
     private final String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z]+\\.[a-zA-Z]{2,6}$"; // Standard email format
+
     @FXML
     private TextField usernameField;
 
@@ -36,8 +34,6 @@ public class SignupController {
     @FXML
     private Label statusLabel;
 
-    private final DbConnectivityClass db = new DbConnectivityClass();
-
     @FXML
     private Button goBackBtn;
 
@@ -46,8 +42,6 @@ public class SignupController {
 
     @FXML
     private Label signupValidationMessage;
-
-
 
     @FXML
     public void initialize() {
@@ -68,21 +62,18 @@ public class SignupController {
 
         // Disable "New Account" button if the form is invalid
         submitBtn.disableProperty().bind(isFormValid);
-
-        // Add event listener to "New Account" button
-        submitBtn.setOnAction(this::createNewAccount);
     }
 
     private void addFocusListeners() {
         usernameField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
-                checkValidity(usernameField, "^[a-zA-Z0-9]{5,20}$", "Username"); // Alphanumeric, 5-20 chars
+                checkValidity(usernameField, usernameRegex, "Username");
             }
         });
 
         passwordField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
-                checkValidity(passwordField, "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$", "Password"); // Complex password
+                checkValidity(passwordField, passwordRegex, "Password");
             }
         });
 
@@ -94,17 +85,9 @@ public class SignupController {
 
         emailField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
-                checkValidity(emailField, "^[a-zA-Z0-9._%+-]+@[a-zA-Z]+\\.[a-zA-Z]{2,6}$", "Email"); // Email validation
+                checkValidity(emailField, emailRegex, "Email");
             }
         });
-    }
-
-    private void addValidationBinding() {
-        submitBtn.disableProperty().bind(usernameField.textProperty().isEmpty()
-                .or(passwordField.textProperty().isEmpty())
-                .or(confirmPasswordField.textProperty().isEmpty())
-                .or(emailField.textProperty().isEmpty())
-                .or(confirmPasswordField.textProperty().isNotEqualTo(passwordField.textProperty())));
     }
 
     private void checkValidity(TextField field, String regex, String fieldName) {
@@ -130,31 +113,34 @@ public class SignupController {
         emailField.clear();
     }
 
-
     public void createNewAccount(ActionEvent actionEvent) {
         String username = usernameField.getText();
         String password = passwordField.getText();
         String email = emailField.getText();
 
-        try {
-            if (!db.isUsernameExists(username)) {
-                db.insertAccount(username, password, email);
+        // Access Preferences
+        Preferences userPreferences = Preferences.userRoot().node(SignupController.class.getName());
+        String existingUsername = userPreferences.get("USERNAME", null);
 
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Account Created");
-                alert.setContentText("Your account has been successfully created.");
-                alert.showAndWait();
-
-                goBack(actionEvent);
-            } else {
-                signupValidationMessage.setText("Username already exists.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            signupValidationMessage.setText("Error creating account.");
+        // Check if the username already exists
+        if (existingUsername != null && existingUsername.equals(username)) {
+            signupValidationMessage.setText("Username already exists.");
+            return;
         }
-    }
 
+        // Save credentials to Preferences
+        userPreferences.put("USERNAME", username);
+        userPreferences.put("PASSWORD", password);
+        userPreferences.put("EMAIL", email);
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Account Created");
+        alert.setContentText("Your account has been successfully created.");
+        alert.showAndWait();
+
+        clearFields();
+        goBack(actionEvent);
+    }
 
     @FXML
     private void goBack(ActionEvent actionEvent) {
